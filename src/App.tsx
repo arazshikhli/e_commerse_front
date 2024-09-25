@@ -6,6 +6,7 @@ import { Layout } from './pages/Layout/Layout';
 import { AdminPanel } from './pages/AdminPanel/AdminPanel';
 import { HomePage } from './pages/HomePage/HomePage';
 import { LoginPage } from './pages/Auth/LoginPage';
+import { ProductsPage } from './pages/Products/ProductsPage';
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
     <Route path='/adminpanel' element={<AdminPanel/>}/>
     <Route path='/register' element={<RegisterPage/>}/>
     <Route path='/login' element={<LoginPage/>}/>
+    <Route path='/products' element={<ProductsPage/>}/>
     </Route>
     </Routes>
   </Box>
