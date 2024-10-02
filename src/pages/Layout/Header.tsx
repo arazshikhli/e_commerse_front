@@ -1,115 +1,52 @@
-import  React,{useState} from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import MenuIcon from '@mui/icons-material/Menu';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
-import {isadmin,isauth,usermail} from '../../redux/baseReduxSlices/authSlice'
+import React,{memo} from 'react';
+import { AppBar, Box, CssBaseline, IconButton, Toolbar, Typography, TextField } from '@mui/material';
+import ListIcon from '@mui/icons-material/List';
+import CloseIcon from '@mui/icons-material/Close';
+import { useSelector,useDispatch } from 'react-redux';
+import {clearToken, isauth,usermail} from '../../redux/baseReduxSlices/authSlice'
+import { Login, Logout } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-interface Props {
-  window?: () => Window;
+interface IHeaderProps {
+  openDrawer: boolean;
+  toggleDrawer: (newOpen: boolean) => void;
 }
 
-const drawerWidth = 240;
-const navItems = ['Home', 'About', 'Contact'];
-
-export const HeaderComponent=(props: Props) =>{
-  const { window } = props;
-  const [mobileOpen, setMobileOpen] =useState(false);
-  const isAdmin=useSelector(isadmin)
+export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggleDrawer }) => {
+  const dispatch=useDispatch()
   const isAuth=useSelector(isauth)
-  const userMail=useSelector(usermail)
-
-  const handleDrawerToggle = () => {
-    setMobileOpen((prevState) => !prevState);
-  };
-
-  const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
-        MUI
-      </Typography>
-      <Divider />
-      <List>
-        {navItems.map((item) => (
-          <ListItem key={item} disablePadding>
-            <ListItemButton sx={{ textAlign: 'center' }}>
-              <ListItemText primary={item} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-        {isAdmin&&<ListItem><Link to={'/adminpanel'}>Admin Panel</Link></ListItem>}
-      </List>
-    </Box>
-  );
-
-  const container = window !== undefined ? () => window().document.body : undefined;
-
+  const email=useSelector(usermail)
+  const handleLogout=()=>{
+    dispatch(clearToken())
+  }
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar component="nav">
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
-          >
-            <MenuIcon />
+      <AppBar sx={{ backgroundColor: '#DD38C6' }} component="nav">
+        <Toolbar sx={{ display: 'flex', width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+          <Typography>DIGITAL STORE</Typography>
+          <IconButton onClick={() => toggleDrawer(!openDrawer)}>
+            {openDrawer ? <CloseIcon /> : <ListIcon />}
           </IconButton>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-          >
-            MUI
-          </Typography>
-          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            {navItems.map((item) => (
-              <Button key={item} sx={{ color: '#fff' }}>
-                {item}
-              </Button>
-            ))}
-            {isAdmin&& <Link  to={'/adminpanel'}>
-            <IconButton>
-            <AdminPanelSettingsIcon/>
-            </IconButton>
-            </Link>}
-          </Box>
+          <TextField
+            sx={{
+              backgroundColor: 'white',
+              border: 'none',
+              borderRadius: '2rem',
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': { borderColor: 'transparent' },
+                '&:hover fieldset': { borderColor: 'transparent' },
+                '&.Mui-focused fieldset': { borderColor: 'transparent' },
+              },
+            }}
+          />
+                  {isAuth?<Box><Typography>{email}</Typography>
+                  <IconButton onClick={handleLogout}>
+                    <Logout/>
+                  </IconButton>
+                  </Box>:<IconButton><Link to={'/auth'}><Login/></Link></IconButton>}
         </Toolbar>
+
       </AppBar>
-      <nav>
-        <Drawer
-          container={container}
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-          sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-          }}
-        >
-          {drawer}
-        </Drawer>
-      </nav>
-     </Box>
+    </Box>
   );
-}
+});

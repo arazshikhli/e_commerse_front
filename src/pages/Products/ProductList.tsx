@@ -1,53 +1,60 @@
-import React, { useState } from 'react';
-import { useGetAllProductsQuery } from '../../redux/rtk/productsRTK';
-import { IProduct, IProductResponse } from '../../types/product.interfaces';
+import React, { useState,FC } from 'react';
+import { Card, Grid2, Typography } from '@mui/material';
 import { ProductItem } from './ProductItem';
-import { Grid2, Pagination } from '@mui/material';
 
-export const ProductList = () => {
-    const [page, setPage] = useState(1);
-    const limit = 10; 
-    const { data, isLoading, error } = useGetAllProductsQuery({ page, limit });
-
-    console.log(data); // For debugging purposes
-
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
-
-    if (error) {
-        return <div>Error occurred</div>;
-    }
-
-    // Handle page change
-    const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-        setPage(value); // Update the current page
-    };
+interface IMobile {
+    brand: string;
+    model: string;
+    price: number;
+    description: string;
+    screenSize: string;
+    ram: string;
+    processor: string;
+    storage: string;
+    imageURL: string;
+    stock?: number;
+    categoryName:string,
+    _id:string
+  }
+  
+  interface ILaptop {
+    brand: string;
+    model: string;
+    price: number;
+    description: string;
+    screenSize: string;
+    ram: string;
+    processor: string;
+    storage: string;
+    graphicsCard: string;
+    imageURL: string;
+    stock?: number;
+    categoryName?:string
+    comments?:[],
+    _id:string
+  }
+  
+  type Product = IMobile | ILaptop;
+  
+  interface ProductsProps {
+    allProducts: Product[];
+  }
+export const ProductList:FC<ProductsProps> = ({allProducts}) => {
 
     return (
-        <div>
-            <Grid2
-                container
-                spacing={2}
-                sx={{
-                    width: '100%',
-                    gridTemplateRows: 'repeat(4, 1fr)',
-                    backgroundColor: 'yellow',
-                }}
-            >
-                {data?.products.map((product: IProduct) => (
-                    <ProductItem
-                        key={product._id} // Corrected access to product's _id
-                        {...product} 
-                    />
-                ))}
-            </Grid2>
-            <Pagination
-                count={data?.totalPages} // Total pages from the response
-                page={page} // Current page state
-                onChange={handleChange} // Update page on change
-                sx={{ marginTop: 2 }} // Optional styling
-            />
-        </div>
+        <>
+            {
+                allProducts?(<Grid2 container sx={{
+                    gridTemplateRows:'repeat(4,1fr)',
+                    width:'100%'
+                }}>
+                    {
+                        allProducts.map((product:Product)=>{
+                            return <ProductItem product ={product}/>
+                        })
+                    }
+                </Grid2>):(<Grid2></Grid2>)
+            }
+        </>
     );
 };

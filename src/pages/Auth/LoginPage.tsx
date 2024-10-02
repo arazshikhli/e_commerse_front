@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { AuthComponent } from './AuthComponent';
 import { Box, Typography } from '@mui/material';
-import {useLoginMutation} from '../../redux/rtk/authRTK'
+import {useLoginMutation} from '../../redux/rtk/authApi'
 
 
 export const LoginPage = () => {

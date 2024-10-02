@@ -76,11 +76,6 @@ export const AuthComponent:React.FC<AuthComponentProps> = ({authFn,buttonType}) 
     }
   
   }
-
-  useEffect(()=>{
-    console.log("isAuth",isAuthenticated);
-    
-  },[isAuthenticated])
   const error:SubmitErrorHandler<myForm>=data=>{
     console.log(data);
     

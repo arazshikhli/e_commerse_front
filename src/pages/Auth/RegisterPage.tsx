@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { AuthComponent } from './AuthComponent';
 import { Box, Typography } from '@mui/material';
-import {useReqisterMutation} from '../../redux/rtk/authRTK'
+import {useReqisterMutation} from '../../redux/rtk/authApi'
 
 
 export const RegisterPage = () => {

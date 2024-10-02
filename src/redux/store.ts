@@ -1,15 +1,17 @@
 import {configureStore} from '@reduxjs/toolkit'
-import { authRTKSlice } from './rtk/authRTK';
-import { productsRTKApi} from './rtk/productsRTK'
+import {productModelsApi} from './rtk/modelsApi';
+import {authApi} from './rtk/authApi'
+import {productApi}from './rtk/productsApi'
 import tokenReducer from './baseReduxSlices/authSlice'
 export const store=configureStore({
     reducer:{
-        [authRTKSlice.reducerPath]:authRTKSlice.reducer,
-        [productsRTKApi.reducerPath]:productsRTKApi.reducer,
+        [productApi.reducerPath]:productApi.reducer,
+        [productModelsApi.reducerPath]:productModelsApi.reducer,
+        [authApi.reducerPath]:authApi.reducer,
         token:tokenReducer
     },
     middleware:(getDefaultMiddleware)=>
-        getDefaultMiddleware().concat(authRTKSlice.middleware,productsRTKApi.middleware)
+        getDefaultMiddleware().concat(productApi.middleware,productModelsApi.middleware,authApi.middleware)
 })
 
 export type RootState = ReturnType<typeof store.getState>;
