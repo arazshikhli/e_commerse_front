@@ -42,19 +42,20 @@ interface IMobile {
 export const ProductList:FC<ProductsProps> = ({allProducts}) => {
 
     return (
-        <>
-            {
-                allProducts?(<Grid2 container sx={{
-                    gridTemplateRows:'repeat(4,1fr)',
-                    width:'100%'
-                }}>
-                    {
-                        allProducts.map((product:Product)=>{
-                            return <ProductItem product ={product}/>
-                        })
-                    }
-                </Grid2>):(<Grid2></Grid2>)
-            }
-        </>
+        <div></div>
+        //  <>
+        // //     {
+        // //         allProducts?(<Grid2 container sx={{
+        // //             gridTemplateRows:'repeat(4,1fr)',
+        // //             width:'100%'
+        // //         }}>
+        // //             {
+        // //                 allProducts.map((product:Product)=>{
+        // //                     return <ProductItem product ={product}/>
+        // //                 })
+        // //             }
+        // //         </Grid2>):(<Grid2></Grid2>)
+        // //     }
+        // </>
     );
 };

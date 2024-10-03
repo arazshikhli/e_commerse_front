@@ -4,7 +4,8 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, Grid2, Typography }
 import {useGetProductModelsQuery} from '../../redux/rtk/modelsApi'
 import {IModel,IModelAttribute} from '../../types/product.interfaces'
 import { ArrowDownwardOutlined } from '@mui/icons-material'
-import { AddProductForm } from './AddProduct/AddProductForm'
+import { AddProduct } from './AddProduct/AddProduct'
+
 
 
 interface ModelData extends IModel{
@@ -51,7 +52,7 @@ export const AdminPanel = () => {
         Add Product Form
       </AccordionSummary>
       <AccordionDetails>
-        <AddProductForm />
+    <AddProduct/>
       </AccordionDetails>
     </Accordion>
   </Box>

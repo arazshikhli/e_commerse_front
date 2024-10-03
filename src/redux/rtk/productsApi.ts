@@ -46,17 +46,22 @@ interface IMobile {
 
 export const productApi=createApi({
     reducerPath:'productApi',
-    baseQuery:fetchBaseQuery({baseUrl:'http://localhost:5000/api/admin'}),
+    baseQuery:fetchBaseQuery({baseUrl:'http://localhost:5000/api/admin/'}),
     tagTypes:['Products','Comments'],
     endpoints:(builder)=>({
-        createProduct:builder.mutation({
-            query:(product)=>({
-                url:'/products',
-                method:'POST',
-                body:product
-            }),
-            invalidatesTags: ['Products'],
-            }),
+        createProduct: builder.mutation({
+            query: (newData) => {
+              return {
+                url: '/products',
+                method: 'POST',
+                body: newData, // уже готовый formData из компонента
+                headers: {
+                  // Нет необходимости задавать Content-Type, так как FormData автоматически задает правильный заголовок
+                },
+              };
+            },
+            invalidatesTags:['Products']
+          }),
             getProducts:builder.query({
                 query:()=>'/products',
                 providesTags:result=>['Products']

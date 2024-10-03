@@ -8,7 +8,8 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import { useSelector } from 'react-redux';
 import { isauth,usermail } from '../../redux/baseReduxSlices/authSlice';
-import {useAddCommentMutation,useLazyGetCommentsQuery}from '../../redux/rtk/productsApi'
+import {useAddCommentMutation,useLazyGetCommentsQuery}from '../../redux/rtk/productsApi';
+import {ProductProps} from '../../types/product.interfaces'
 const modalStyle = {
     position: 'absolute' as 'absolute',
     top: '50%',
@@ -20,44 +21,7 @@ const modalStyle = {
     boxShadow: 24,
     p: 4,
   };
-interface IMobile {
-    brand: string;
-    model: string;
-    price: number;
-    description: string;
-    screenSize: string;
-    ram: string;
-    processor: string;
-    storage: string;
-    imageURL: string;
-    stock?: number;
-    categoryName:string,
-    _id:string,
-    comments?:[]
-  }
-  
-  interface ILaptop {
-    brand: string;
-    model: string;
-    price: number;
-    description: string;
-    screenSize: string;
-    ram: string;
-    processor: string;
-    storage: string;
-    graphicsCard: string;
-    imageURL: string;
-    stock?: number;
-    categoryName?:string
-    comments?:[],
 
-  }
-  
-  type Product = IMobile | ILaptop;
-  
-  interface ProductProps {
-    product: Product;
-  }
 export const ProductItem:FC<ProductProps> = ({product}) => {
         const [addComment,{isLoading,error}]=useAddCommentMutation()
         const [getProductComments, { data: comments, isFetching: isFetchingComments }] = useLazyGetCommentsQuery(); // Lazy query
@@ -91,7 +55,7 @@ export const ProductItem:FC<ProductProps> = ({product}) => {
        
     return (
         <Grid2 >
-        <Card sx={{ maxWidth: 345, margin: 2,cursor:'pointer' }}>
+        {/* <Card sx={{ maxWidth: 345, margin: 2,cursor:'pointer' }}>
             <CardHeader
             title={product.model}
             subheader={product.brand}
@@ -162,7 +126,7 @@ export const ProductItem:FC<ProductProps> = ({product}) => {
           </Box>
         </Fade>
         </Modal>
-        </Card>
+        </Card> */}
         
         </Grid2>
 
