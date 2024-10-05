@@ -1,61 +1,26 @@
 import React, { useState,FC } from 'react';
 import { Card, Grid2, Typography } from '@mui/material';
 import { ProductItem } from './ProductItem';
-
-interface IMobile {
-    brand: string;
-    model: string;
-    price: number;
-    description: string;
-    screenSize: string;
-    ram: string;
-    processor: string;
-    storage: string;
-    imageURL: string;
-    stock?: number;
-    categoryName:string,
-    _id:string
-  }
-  
-  interface ILaptop {
-    brand: string;
-    model: string;
-    price: number;
-    description: string;
-    screenSize: string;
-    ram: string;
-    processor: string;
-    storage: string;
-    graphicsCard: string;
-    imageURL: string;
-    stock?: number;
-    categoryName?:string
-    comments?:[],
-    _id:string
-  }
-  
-  type Product = IMobile | ILaptop;
-  
+import { CommonType } from '../../types/product.interfaces';
   interface ProductsProps {
-    allProducts: Product[];
+    TVList: CommonType[];
+    MobileList: CommonType[];
+    LaptopList:CommonType[]
   }
-export const ProductList:FC<ProductsProps> = ({allProducts}) => {
 
+
+export const ProductList:FC<ProductsProps> = ({LaptopList,MobileList,TVList}) => {
+
+  console.log(TVList);
     return (
-        <div></div>
-        //  <>
-        // //     {
-        // //         allProducts?(<Grid2 container sx={{
-        // //             gridTemplateRows:'repeat(4,1fr)',
-        // //             width:'100%'
-        // //         }}>
-        // //             {
-        // //                 allProducts.map((product:Product)=>{
-        // //                     return <ProductItem product ={product}/>
-        // //                 })
-        // //             }
-        // //         </Grid2>):(<Grid2></Grid2>)
-        // //     }
-        // </>
+     <Grid2 container spacing={{xs:2,md:3}} columns={{xs: 4, sm: 8, md: 12}}>
+      {
+        TVList.map((product:CommonType)=>{
+          console.log(product);
+          
+          return <ProductItem product={product}/>
+        })
+      }
+     </Grid2>
     );
 };

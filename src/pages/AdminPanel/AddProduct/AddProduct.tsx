@@ -1,11 +1,12 @@
-import React from 'react';
-import { Box, TextField, Button, Typography, FormControl, InputLabel, Select, MenuItem, FormHelperText } from '@mui/material';
+import React, { useEffect,useState } from 'react';
+import { Box, TextField, Button, Typography, FormControl, InputLabel, Select, MenuItem, FormHelperText, IconButton, Alert, AlertTitle, CircularProgress } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useCreateProductMutation } from '../../../redux/rtk/productsApi';
 import { convertImageToBase64 } from '../../../helpers/ConvertImages';
 import { FileObject } from '../../../types/product.interfaces';
 import { v4 as uuidv4, v4 } from 'uuid';
-
+import CloseIcon from '@mui/icons-material/Close';
+import { Close } from '@mui/icons-material';
 
 
 export interface CommonType {
@@ -27,27 +28,29 @@ export interface CommonType {
 }
 
 export const AddProduct = () => {
-  const { handleSubmit, watch, register, setValue, formState: { errors } } = useForm<CommonType>({
+  const { handleSubmit, watch, register, setValue, reset,formState: { errors } } = useForm<CommonType>({
     mode: 'onChange'
   });
-  const [createProduct, { isLoading, error, isSuccess }] = useCreateProductMutation();
+  const [createProduct, { isLoading, error:addProductError, isSuccess }] = useCreateProductMutation();
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]); 
+  const [showAlert, setShowAlert] = useState(false); // Состояние для показа уведомления
 
 
   const submit = async (data: CommonType) => {
-    console.log("DATA: ", data);
-   try{
-    const base64Images=await convertImageToBase64(data.images);
-    const newData={
-      ...data,
-      images:base64Images
+    try {
+      const base64Images = await convertImageToBase64(data.images);
+      const newData = { ...data, images: base64Images };
+      await createProduct(newData);
+      
+      if (isSuccess) {
+        reset(); // Сбрасываем форму
+        setShowAlert(true); // Показываем уведомление
+        setTimeout(() => setShowAlert(false), 3000);
+        setImagePreviews([]) // Убираем уведомление через 3 секунды
+      }
+    } catch (err) {
+      console.error("Error Converting images to Base64: ", err);
     }
-   await createProduct({newData})
-   }
-   catch(err){
-    console.log("Error Converting images to 64Base: ", err);
-    
-   }
-    // Отправляем запрос с formData
   };
   const category = watch('categoryName');
 
@@ -55,23 +58,66 @@ export const AddProduct = () => {
     const file = event.target.files?.[0];
     if (file) {
       const newImage: FileObject = {
-        originFileObj: file, // Сам файл
-        name: file.name,     // Название файла
-        lastModified:file.lastModified,
-        lastModifiedDate:new Date(),
-        size:file.size.toString(),
-        uid:uuidv4()
+        originFileObj: file,
+        name: file.name,
+        lastModified: file.lastModified,
+        lastModifiedDate: new Date(),
+        size: file.size.toString(),
+        uid: uuidv4()
       };
       const currentImages = watch('images') || [];
       setValue('images', [...currentImages, newImage]);
+
+      // Конвертируем файл в base64 для предпросмотра
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreviews((prev) => [...prev, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
+  const handleRemoveImage = (index: number) => {
+    // Удаляем из массива base64 картинок
+    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+
+    // Удаляем из массива файлов в форме
+    const currentImages = watch('images') || [];
+    const updatedImages = currentImages.filter((_, i) => i !== index);
+    setValue('images', updatedImages);
+  };
   return (
-    <Box>
+    <Box sx={{width:'100%',display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center',
+    height:'100%'
+    }}>
       <Typography>Add Product</Typography>
-      <Box component={'form'} onSubmit={handleSubmit(submit)}>
-        <FormControl sx={{ minWidth: '300px' }} error={!!errors.categoryName}>
+      {
+        isLoading&& <CircularProgress />
+      }
+      {showAlert && isSuccess && (
+        <Alert severity="success">
+          <AlertTitle>Success</AlertTitle>
+          Product has been added successfully!
+        </Alert>
+      )}
+      {addProductError && (
+        <Alert severity="error">
+          <AlertTitle>Error</AlertTitle>
+          'Failed to add product. Please try again.
+        </Alert>
+      )}
+      <Box component={'form'}
+      sx={{
+        width:'80%',
+        display:'flex',
+        flexDirection:'column',
+      
+        justifyContent:'space-around',
+        padding:'10px',
+        borderRadius:'2em'
+      }}
+      onSubmit={handleSubmit(submit)}>
+        <FormControl  sx={{ minWidth: '300px' }} error={!!errors.categoryName}>
           <InputLabel>Category</InputLabel>
           <Select
             {...register('categoryName', { required: 'Category is required' })}
@@ -86,12 +132,14 @@ export const AddProduct = () => {
           <FormHelperText>{errors.categoryName?.message}</FormHelperText>
         </FormControl>
 
+        <Box sx={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-around',gap:'2em'}}>
         <TextField
           label="Brand"
           type="text"
           {...register('brand', { required: 'Brand is required' })}
           error={!!errors.brand}
           helperText={errors.brand?.message}
+          sx={{marginTop:'1em',width:'50%'}} 
         />
 
         <TextField
@@ -99,23 +147,18 @@ export const AddProduct = () => {
           {...register('model', { required: 'Model is required' })}
           error={!!errors.model}
           helperText={errors.model?.message}
+          sx={{marginTop:'1em',width:'50%'}} 
         />
 
+        </Box>
+        <Box sx={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-around',gap:'2em'}}>
         <TextField
           label="Price"
           type='number'
           {...register('price', { required: 'Price is required' })}
           error={!!errors.price}
           helperText={errors.price?.message}
-        />
-
-        <TextField
-          multiline
-          minRows={3}
-          label="Description"
-          {...register('description', { required: 'Description is required' })}
-          error={!!errors.description}
-          helperText={errors.description?.message}
+          sx={{marginTop:'1em',width:'50%'}} 
         />
 
         <TextField
@@ -123,33 +166,21 @@ export const AddProduct = () => {
           {...register('screenSize', { required: 'Screen size is required' })}
           error={!!errors.screenSize}
           helperText={errors.screenSize?.message}
+          sx={{marginTop:'1em',width:'50%'}} 
         />
-
-        <div>
-          <input
-            accept="image/*"
-            style={{ display: 'none' }}
-            id="contained-button-file"
-            type="file"
-            onChange={handleFileChange}
-          />
-          <label htmlFor="contained-button-file">
-            <Button variant="contained" component="span">
-              Upload File
-            </Button>
-          </label>
-        </div>
-
+        </Box>
         {category === 'TV' && (
           <>
-            <TextField
+          <Box sx={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-around',gap:'2em'}}>
+          <TextField
               label='Resolution'
               {...register('resolution', { required: 'Resolution is required' })}
               error={!!errors.resolution}
               helperText={errors.resolution?.message}
+              sx={{marginTop:'1em',width:'50%'}} 
             />
 
-            <FormControl error={!!errors.smartTV}>
+            <FormControl sx={{marginTop:'1em',width:'50%'}}  error={!!errors.smartTV}>
               <InputLabel>Smart TV</InputLabel>
               <Select
                 {...register('smartTV', { required: 'Smart TV is required' })}
@@ -162,16 +193,20 @@ export const AddProduct = () => {
               </Select>
               <FormHelperText>{errors.smartTV?.message}</FormHelperText>
             </FormControl>
+          </Box>
+          
           </>
         )}
 
         {category === 'Mobile' && (
           <>
-            <TextField
+              <Box sx={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-around',gap:'2em'}}>
+              <TextField
               label='RAM'
               {...register('ram', { required: 'RAM is required' })}
               error={!!errors.ram}
               helperText={errors.ram?.message}
+              sx={{marginTop:'1em',width:'33.33%'}} 
             />
 
             <TextField
@@ -179,6 +214,7 @@ export const AddProduct = () => {
               {...register('processor', { required: 'Processor is required' })}
               error={!!errors.processor}
               helperText={errors.processor?.message}
+              sx={{marginTop:'1em',width:'33.33%'}} 
             />
 
             <TextField
@@ -186,17 +222,22 @@ export const AddProduct = () => {
               {...register('storage', { required: 'Storage is required' })}
               error={!!errors.storage}
               helperText={errors.storage?.message}
+              sx={{marginTop:'1em',width:'33.33%'}} 
             />
+              </Box>
+            
           </>
         )}
 
         {category === 'Laptop' && (
           <>
+              <Box sx={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-around',gap:'2em'}}>
             <TextField
               label='RAM'
               {...register('ram', { required: 'RAM is required' })}
               error={!!errors.ram}
               helperText={errors.ram?.message}
+              sx={{marginTop:'1em',width:'50%'}} 
             />
 
             <TextField
@@ -204,13 +245,17 @@ export const AddProduct = () => {
               {...register('processor', { required: 'Processor is required' })}
               error={!!errors.processor}
               helperText={errors.processor?.message}
+              sx={{marginTop:'1em',width:'50%'}} 
             />
-
+            </Box>
+            
+            <Box sx={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-around',gap:'2em'}}>
             <TextField
               label='Storage'
               {...register('storage', { required: 'Storage is required' })}
               error={!!errors.storage}
               helperText={errors.storage?.message}
+              sx={{marginTop:'1em',width:'50%'}} 
             />
 
             <TextField
@@ -218,11 +263,72 @@ export const AddProduct = () => {
               {...register('graphicsCard', { required: 'Graphics Card is required' })}
               error={!!errors.graphicsCard}
               helperText={errors.graphicsCard?.message}
+              sx={{marginTop:'1em',width:'50%'}} 
             />
+            </Box>
+
+           
           </>
         )}
+          <TextField
+          fullWidth
+          multiline
+          minRows={3}
+          label="Description"
+          {...register('description', { required: 'Description is required' })}
+          error={!!errors.description}
+          helperText={errors.description?.message}
+          sx={{marginTop:'1em'}} 
+        />
+        <Box sx={{
+          display:'flex',width:'100%',flexDirection:'row',justifyContent:'center'
+        }}>
+          <input
+            accept="image/*"
+            style={{ display: 'none' }}
+            id="contained-button-file"
+            type="file"
+            onChange={handleFileChange}
+          />
+          <label htmlFor="contained-button-file">
+            <Button variant="contained" component="span">
+              Upload File
+            </Button>
+          </label>
+        </Box>
+        <Box sx={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+  {imagePreviews.map((preview, index) => (
+    <Box 
+      key={index} 
+      sx={{ 
+        width: '300px', 
+        height: '300px', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        justifyContent: 'center',
+        alignItems:'center', 
+        position: 'relative',
+        backgroundColor:'gray' // Позиционирование на внешний контейнер
+      }}
+    >
+      <Box 
+        sx={{ 
+          width: '250px', 
+          height: '250px', 
+          backgroundImage: `url(${preview})`, 
+          backgroundPosition: 'center', 
+          backgroundSize: 'cover', 
+      
+        }} 
+      />
+      <IconButton onClick={()=>handleRemoveImage(index)} sx={{ position: 'absolute', top: '2px',right:'1px', zIndex: '300' }}>
+        <CloseIcon />
+      </IconButton>
+    </Box>
+  ))}
+</Box>
 
-        <Button type='submit'>Add Product</Button>
+        <Button sx={{marginTop:'1em'}} variant='contained' type='submit'>Add Product</Button>
       </Box>
     </Box>
   );

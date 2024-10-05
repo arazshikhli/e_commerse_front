@@ -51,12 +51,13 @@ export const productApi=createApi({
     endpoints:(builder)=>({
         createProduct: builder.mutation({
             query: (newData) => {
+              const token=localStorage.getItem('token')
               return {
                 url: '/products',
                 method: 'POST',
-                body: newData, // уже готовый formData из компонента
+                body: newData, 
                 headers: {
-                  // Нет необходимости задавать Content-Type, так как FormData автоматически задает правильный заголовок
+                  Authorization: `Bearer ${token}`, 
                 },
               };
             },
