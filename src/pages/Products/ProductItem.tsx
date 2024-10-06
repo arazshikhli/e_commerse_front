@@ -2,24 +2,34 @@ import React, { FC, useState } from 'react';
 import { Card, CardActions, CardContent, CardHeader, CardMedia, Grid2, IconButton, Button, Box } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
-import { CommonType } from '../../types/product.interfaces';
-
+import { CommonType, RenderedProduct } from '../../types/product.interfaces';
 interface ProductProps {
-  product: CommonType;
+  product: RenderedProduct;
+  onCardClick: (product: RenderedProduct) => void; 
 }
 
-export const ProductItem: FC<ProductProps> = ({ product }) => {
+export const ProductItem: FC<ProductProps> = ({ product,onCardClick }) => {
+ 
   const [hovered, setHovered] = useState(false);
+
+  const handleClick=()=>{
+    onCardClick(product)
+  }
+
 
   return (
 
       
-        <Card
+         <Card
+         onClick={handleClick} 
         sx={{
-          marginRight:'2px',
-          height:'400px',
-          borderRadius:'15px'
+          marginRight:'5px',
+          height:'300px',
+          borderRadius:'15px',
+          cursor:'pointer'
+          
         }}
+  
         >
           <CardHeader title={product.model} />
    
@@ -30,8 +40,8 @@ export const ProductItem: FC<ProductProps> = ({ product }) => {
             sx={{
               justifyContent: 'space-between',
               transition: 'opacity 0.3s',
-              opacity: hovered ? 1 : 0,
-              visibility: hovered ? 'visible' : 'hidden',
+              // opacity: hovered ? 1 : 0,
+              // visibility: hovered ? 'visible' : 'hidden',
             }}
           >
             <IconButton>
@@ -41,7 +51,6 @@ export const ProductItem: FC<ProductProps> = ({ product }) => {
               <ChatBubbleOutlineOutlinedIcon />
             </IconButton>
           </CardActions>
-        </Card>
-   
+        </Card>   
   );
 };

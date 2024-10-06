@@ -26,6 +26,23 @@ export interface CommonType{
   smartTV?:string;
 
 }
+export interface RenderedProduct{
+  brand: string;
+  model: string;
+  price: number;
+  description: string;
+  screenSize: string;
+  categoryName:string;
+  imageURL:string[];
+  _id?:string;
+  comments?:[];  
+  ram?: string;
+  processor?: string;
+  storage?: string;
+  graphicsCard?: string;
+  resolution?: string;
+  smartTV?:string;
+}
   export interface IMobile extends CommonType {
     ram: string;
     processor: string;

@@ -1,21 +1,27 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback,memo} from 'react';
 import { Box, List, ListItem, Typography, Drawer } from '@mui/material';
 import { HeaderComponent } from './Header';
 import { Outlet } from 'react-router-dom';
 import { useGetProductModelsNamesQuery } from '../../redux/rtk/modelsApi';
 import {useTransition} from '@react-spring/web'
 import './style.css'
+import { useGetCartQuery } from '../../redux/rtk/productsApi';
+import { useSelector } from 'react-redux';
+import {userID} from '../../redux/baseReduxSlices/authSlice'
 interface modelName {
   categoryName: string;
 }
 
-export const Layout = React.memo(() => {
+export const Layout = memo(() => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const { data: modelsNames } = useGetProductModelsNamesQuery('');
   const [openModal, setOpenModal] = useState(false);
   const [hoveredModel, setHoveredModel] = useState<string | null>(null);
+  const user_id=useSelector(userID)
+  const {data:Cart,error:cartError,isLoading:isCartLoading}=useGetCartQuery(user_id)
 
-
+  console.log(user_id);
+  
   const toggleDrawer = useCallback((newOpen: boolean) => {
     setOpenDrawer(newOpen);
   }, []);
@@ -53,7 +59,7 @@ export const Layout = React.memo(() => {
           <DrawerList />
         </Drawer>
       </div>
-      <footer style={{minHeight:"60px",backgroundColor:'#FDA5A5', textAlign:'center'}}>Footer</footer>
+      <footer className='footer'>Footer</footer>
     </div>
   );
 });

@@ -72,6 +72,7 @@ export const AuthComponent:React.FC<AuthComponentProps> = ({authFn,buttonType}) 
           localStorage.setItem('token', JSON.stringify(token));
           localStorage.setItem('email', JSON.stringify(email));
           localStorage.setItem('isAdmin', JSON.stringify(isAdmin));
+          localStorage.setItem('userId',JSON.stringify(id))
         } else {
           console.error("Token is missing or not a string.");
         }

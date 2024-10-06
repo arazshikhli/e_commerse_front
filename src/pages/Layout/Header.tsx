@@ -21,7 +21,7 @@ export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggl
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar sx={{ backgroundColor: '#DD38C6' }} component="nav">
+      <AppBar sx={{ backgroundColor: '#DD38C6',margin:'0' }} component="nav" position='static'>
         <Toolbar sx={{ display: 'flex', width: '100%', justifyContent: 'center', alignItems: 'center' }}>
           <Typography>DIGITAL STORE</Typography>
           <IconButton onClick={() => toggleDrawer(!openDrawer)}>

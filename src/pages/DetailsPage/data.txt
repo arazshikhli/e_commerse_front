@@ -1,0 +1,632 @@
+Brand: Apple
+Model: iPhone 13 Pro Max
+Price: 1099
+Screen size: 6.7 inches
+RAM: 6 GB
+Storage: 128 GB
+Processor: A15 Bionic
+Battery: Li-Ion
+Stock: 50
+Number of SIM cards: 1 Nano-SIM + eSIM
+Operating system: iOS 15
+NFC: true
+Display type: Super Retina XDR OLED
+Battery capacity: 4352 mAh
+Weight: 238g
+Network standard: 5G
+
+Brand: Apple
+Model: iPhone 12 Pro
+Price: 999
+Screen size: 6.1 inches
+RAM: 6 GB
+Storage: 128 GB
+Processor: A14 Bionic
+Battery: Li-Ion
+Stock: 30
+Number of SIM cards: 1 Nano-SIM + eSIM
+Operating system: iOS 14
+NFC: true
+Display type: Super Retina XDR OLED
+Battery capacity: 2815 mAh
+Weight: 189g
+Network standard: 5G
+
+Brand: Apple
+Model: iPhone 11
+Price: 699
+Screen size: 6.1 inches
+RAM: 4 GB
+Storage: 64 GB
+Processor: A13 Bionic
+Battery: Li-Ion
+Stock: 40
+Number of SIM cards: 1 Nano-SIM + eSIM
+Operating system: iOS 13
+NFC: true
+Display type: Liquid Retina IPS LCD
+Battery capacity: 3110 mAh
+Weight: 194g
+Network standard: 4G
+
+Brand: Apple
+Model: iPhone SE (2022)
+Price: 429
+Screen size: 4.7 inches
+RAM: 4 GB
+Storage: 64 GB
+Processor: A15 Bionic
+Battery: Li-Ion
+Stock: 25
+Number of SIM cards: 1 Nano-SIM + eSIM
+Operating system: iOS 15
+NFC: true
+Display type: Retina IPS LCD
+Battery capacity: 1821 mAh
+Weight: 148g
+Network standard: 5G
+
+Brand: Apple
+Model: iPhone XR
+Price: 499
+Screen size: 6.1 inches
+RAM: 3 GB
+Storage: 64 GB
+Processor: A12 Bionic
+Battery: Li-Ion
+Stock: 30
+Number of SIM cards: 1 Nano-SIM + eSIM
+Operating system: iOS 12
+NFC: true
+Display type: Liquid Retina IPS LCD
+Battery capacity: 2942 mAh
+Weight: 194g
+Network standard: 4G
+
+Brand: Apple
+Model: iPhone 12 Mini
+Price: 699
+Screen size: 5.4 inches
+RAM: 4 GB
+Storage: 64 GB
+Processor: A14 Bionic
+Battery: Li-Ion
+Stock: 30
+Number of SIM cards: 1 Nano-SIM + eSIM
+Operating system: iOS 14
+NFC: true
+Display type: Super Retina XDR OLED
+Battery capacity: 2227 mAh
+Weight: 135g
+Network standard: 5G
+
+Brand: Apple
+Model: iPhone 13
+Price: 799
+Screen size: 6.1 inches
+RAM: 4 GB
+Storage: 128 GB
+Processor: A15 Bionic
+Battery: Li-Ion
+Stock: 50
+Number of SIM cards: 1 Nano-SIM + eSIM
+Operating system: iOS 15
+NFC: true
+Display type: Super Retina XDR OLED
+Battery capacity: 3240 mAh
+Weight: 174g
+Network standard: 5G
+Samsung (10 моделей):
+Brand: Samsung
+Model: Galaxy S22 Ultra
+Price: 1199
+Screen size: 6.8 inches
+RAM: 12 GB
+Storage: 128 GB
+Processor: Exynos 2200
+Battery: Li-Ion
+Stock: 100
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 12
+NFC: true
+Display type: Dynamic AMOLED 2X
+Battery capacity: 5000 mAh
+Weight: 228g
+Network standard: 5G
+
+Brand: Samsung
+Model: Galaxy Z Fold 3
+Price: 1799
+Screen size: 7.6 inches
+RAM: 12 GB
+Storage: 256 GB
+Processor: Snapdragon 888
+Battery: Li-Po
+Stock: 80
+Number of SIM cards: 1 Nano-SIM
+Operating system: Android 11
+NFC: true
+Display type: Foldable Dynamic AMOLED
+Battery capacity: 4400 mAh
+Weight: 271g
+Network standard: 5G
+
+Brand: Samsung
+Model: Galaxy S21
+Price: 799
+Screen size: 6.2 inches
+RAM: 8 GB
+Storage: 128 GB
+Processor: Exynos 2100
+Battery: Li-Ion
+Stock: 150
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 11
+NFC: true
+Display type: Dynamic AMOLED 2X
+Battery capacity: 4000 mAh
+Weight: 169g
+Network standard: 5G
+
+Brand: Samsung
+Model: Galaxy A72
+Price: 499
+Screen size: 6.7 inches
+RAM: 6 GB
+Storage: 128 GB
+Processor: Snapdragon 720G
+Battery: Li-Ion
+Stock: 200
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 11
+NFC: true
+Display type: Super AMOLED
+Battery capacity: 5000 mAh
+Weight: 203g
+Network standard: 4G
+
+Brand: Samsung
+Model: Galaxy A52
+Price: 399
+Screen size: 6.5 inches
+RAM: 6 GB
+Storage: 128 GB
+Processor: Snapdragon 720G
+Battery: Li-Ion
+Stock: 250
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 11
+NFC: true
+Display type: Super AMOLED
+Battery capacity: 4500 mAh
+Weight: 189g
+Network standard: 4G
+
+Brand: Samsung
+Model: Galaxy S20 FE
+Price: 599
+Screen size: 6.5 inches
+RAM: 6 GB
+Storage: 128 GB
+Processor: Snapdragon 865
+Battery: Li-Ion
+Stock: 180
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 10
+NFC: true
+Display type: Super AMOLED
+Battery capacity: 4500 mAh
+Weight: 190g
+Network standard: 5G
+
+Samsung (продолжение):
+Brand: Samsung
+Model: Galaxy Note 20 Ultra
+Price: 1299
+Screen size: 6.9 inches
+RAM: 12 GB
+Storage: 128 GB
+Processor: Exynos 990
+Battery: Li-Ion
+Stock: 70
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 10
+NFC: true
+Display type: Dynamic AMOLED 2X
+Battery capacity: 4500 mAh
+Weight: 208g
+Network standard: 5G
+
+Brand: Samsung
+Model: Galaxy A32
+Price: 299
+Screen size: 6.4 inches
+RAM: 4 GB
+Storage: 64 GB
+Processor: MediaTek Helio G80
+Battery: Li-Ion
+Stock: 300
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 11
+NFC: true
+Display type: Super AMOLED
+Battery capacity: 5000 mAh
+Weight: 184g
+Network standard: 4G
+
+Brand: Samsung
+Model: Galaxy Z Flip 3
+Price: 999
+Screen size: 6.7 inches
+RAM: 8 GB
+Storage: 128 GB
+Processor: Snapdragon 888
+Battery: Li-Po
+Stock: 90
+Number of SIM cards: 1 Nano-SIM
+Operating system: Android 11
+NFC: true
+Display type: Foldable Dynamic AMOLED
+Battery capacity: 3300 mAh
+Weight: 183g
+Network standard: 5G
+
+Brand: Samsung
+Model: Galaxy M51
+Price: 379
+Screen size: 6.7 inches
+RAM: 6 GB
+Storage: 128 GB
+Processor: Snapdragon 730
+Battery: Li-Ion
+Stock: 120
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 10
+NFC: true
+Display type: Super AMOLED Plus
+Battery capacity: 7000 mAh
+Weight: 213g
+Network standard: 4G
+
+Xiaomi (10 моделей):
+Brand: Xiaomi
+Model: Mi 11 Ultra
+Price: 1199
+Screen size: 6.81 inches
+RAM: 12 GB
+Storage: 256 GB
+Processor: Snapdragon 888
+Battery: Li-Po
+Stock: 50
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 11
+NFC: true
+Display type: AMOLED
+Battery capacity: 5000 mAh
+Weight: 234g
+Network standard: 5G
+
+Brand: Xiaomi
+Model: Redmi Note 10 Pro
+Price: 299
+Screen size: 6.67 inches
+RAM: 6 GB
+Storage: 128 GB
+Processor: Snapdragon 732G
+Battery: Li-Po
+Stock: 200
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 11
+NFC: true
+Display type: AMOLED
+Battery capacity: 5020 mAh
+Weight: 193g
+Network standard: 4G
+
+Brand: Xiaomi
+Model: Poco F3
+Price: 399
+Screen size: 6.67 inches
+RAM: 6 GB
+Storage: 128 GB
+Processor: Snapdragon 870
+Battery: Li-Po
+Stock: 150
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 11
+NFC: true
+Display type: AMOLED
+Battery capacity: 4520 mAh
+Weight: 196g
+Network standard: 5G
+
+Brand: Xiaomi
+Model: Mi 10T Pro
+Price: 599
+Screen size: 6.67 inches
+RAM: 8 GB
+Storage: 128 GB
+Processor: Snapdragon 865
+Battery: Li-Ion
+Stock: 90
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 10
+NFC: true
+Display type: IPS LCD
+Battery capacity: 5000 mAh
+Weight: 218g
+Network standard: 5G
+
+Brand: Xiaomi
+Model: Redmi 9
+Price: 149
+Screen size: 6.53 inches
+RAM: 3 GB
+Storage: 32 GB
+Processor: MediaTek Helio G80
+Battery: Li-Ion
+Stock: 300
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 10
+NFC: false
+Display type: IPS LCD
+Battery capacity: 5020 mAh
+Weight: 198g
+Network standard: 4G
+
+Brand: Xiaomi
+Model: Mi 11 Lite
+Price: 299
+Screen size: 6.55 inches
+RAM: 6 GB
+Storage: 128 GB
+Processor: Snapdragon 732G
+Battery: Li-Po
+Stock: 180
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 11
+NFC: true
+Display type: AMOLED
+Battery capacity: 4250 mAh
+Weight: 157g
+Network standard: 4G
+
+Xiaomi (продолжение):
+Brand: Xiaomi
+Model: Mi 10
+Price: 699
+Screen size: 6.67 inches
+RAM: 8 GB
+Storage: 128 GB
+Processor: Snapdragon 865
+Battery: Li-Ion
+Stock: 120
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 10
+NFC: true
+Display type: AMOLED
+Battery capacity: 4780 mAh
+Weight: 208g
+Network standard: 5G
+
+Brand: Xiaomi
+Model: Mi Note 10
+Price: 549
+Screen size: 6.47 inches
+RAM: 6 GB
+Storage: 128 GB
+Processor: Snapdragon 730G
+Battery: Li-Po
+Stock: 80
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 9
+NFC: true
+Display type: AMOLED
+Battery capacity: 5260 mAh
+Weight: 208g
+Network standard: 4G
+
+Brand: Xiaomi
+Model: Redmi K40 Pro
+Price: 499
+Screen size: 6.67 inches
+RAM: 8 GB
+Storage: 128 GB
+Processor: Snapdragon 888
+Battery: Li-Po
+Stock: 150
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 11
+NFC: true
+Display type: AMOLED
+Battery capacity: 4520 mAh
+Weight: 196g
+Network standard: 5G
+
+Brand: Xiaomi
+Model: Mi Mix Fold
+Price: 1299
+Screen size: 8.01 inches (unfolded)
+RAM: 12 GB
+Storage: 256 GB
+Processor: Snapdragon 888
+Battery: Li-Po
+Stock: 60
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 11
+NFC: true
+Display type: Foldable AMOLED
+Battery capacity: 5020 mAh
+Weight: 317g
+Network standard: 5G
+
+Huawei (10 моделей):
+Brand: Huawei
+Model: P40 Pro
+Price: 899
+Screen size: 6.58 inches
+RAM: 8 GB
+Storage: 256 GB
+Processor: Kirin 990 5G
+Battery: Li-Po
+Stock: 70
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 10
+NFC: true
+Display type: OLED
+Battery capacity: 4200 mAh
+Weight: 209g
+Network standard: 5G
+
+Brand: Huawei
+Model: Mate 40 Pro
+Price: 1099
+Screen size: 6.76 inches
+RAM: 8 GB
+Storage: 256 GB
+Processor: Kirin 9000 5G
+Battery: Li-Po
+Stock: 100
+Number of SIM cards: 2 Nano-SIM
+Operating system: HarmonyOS
+NFC: true
+Display type: OLED
+Battery capacity: 4400 mAh
+Weight: 212g
+Network standard: 5G
+
+Brand: Huawei
+Model: Nova 7 5G
+Price: 499
+Screen size: 6.53 inches
+RAM: 8 GB
+Storage: 128 GB
+Processor: Kirin 985 5G
+Battery: Li-Po
+Stock: 180
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 10
+NFC: true
+Display type: OLED
+Battery capacity: 4000 mAh
+Weight: 180g
+Network standard: 5G
+
+Brand: Huawei
+Model: P30
+Price: 699
+Screen size: 6.1 inches
+RAM: 6 GB
+Storage: 128 GB
+Processor: Kirin 980
+Battery: Li-Po
+Stock: 200
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 9
+NFC: true
+Display type: OLED
+Battery capacity: 3650 mAh
+Weight: 165g
+Network standard: 4G
+
+Brand: Huawei
+Model: Mate 30 Pro
+Price: 999
+Screen size: 6.53 inches
+RAM: 8 GB
+Storage: 256 GB
+Processor: Kirin 990
+Battery: Li-Po
+Stock: 90
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 10
+NFC: true
+Display type: OLED
+Battery capacity: 4500 mAh
+Weight: 198g
+Network standard: 5G
+
+Brand: Huawei
+Model: P Smart 2021
+Price: 229
+Screen size: 6.67 inches
+RAM: 4 GB
+Storage: 128 GB
+Processor: Kirin 710A
+Battery: Li-Po
+Stock: 300
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 10
+NFC: true
+Display type: IPS LCD
+Battery capacity: 5000 mAh
+Weight: 206g
+Network standard: 4G
+
+Brand: Huawei
+Model: Y9a
+Price: 329
+Screen size: 6.63 inches
+RAM: 6 GB
+Storage: 128 GB
+Processor: MediaTek Helio G80
+Battery: Li-Po
+Stock: 180
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 10
+NFC: false
+Display type: IPS LCD
+Battery capacity: 4300 mAh
+Weight: 197g
+Network standard: 4G
+
+Brand: Huawei
+Model: P Smart Z
+Price: 249
+Screen size: 6.59 inches
+RAM: 4 GB
+Storage: 64 GB
+Processor: Kirin 710F
+Battery: Li-Ion
+Stock: 150
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 9
+NFC: false
+Display type: IPS LCD
+Battery capacity: 4000 mAh
+Weight: 196g
+Network standard: 4G
+
+Brand: Huawei
+Model: Y7a
+Price: 199
+Screen size: 6.67 inches
+RAM: 4 GB
+Storage: 128 GB
+Processor: Kirin 710A
+Battery: Li-Ion
+Stock: 250
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 10
+NFC: true
+Display type: IPS LCD
+Battery capacity: 5000 mAh
+Weight: 206g
+Network standard: 4G
+
+Brand: Huawei
+Model: Nova 8i
+Price: 349
+Screen size: 6.67 inches
+RAM: 6 GB
+Storage: 128 GB
+Processor: Snapdragon 662
+Battery: Li-Ion
+Stock: 190
+Number of SIM cards: 2 Nano-SIM
+Operating system: Android 10
+NFC: true
+Display type: IPS LCD
+Battery capacity: 4300 mAh
+Weight: 190g
+Network standard: 4G

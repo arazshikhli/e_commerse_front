@@ -5,6 +5,7 @@ interface AuthToken {
     isAdmin: boolean;
     isAuth: boolean;
     email: string | null;
+    userId:string
 }
 
 const initialState: AuthToken = {
@@ -12,6 +13,7 @@ const initialState: AuthToken = {
     isAdmin: localStorage.getItem('isAdmin') ? Boolean(JSON.parse(localStorage.getItem('isAdmin') as string)) : false,
     isAuth: localStorage.getItem('isAuth') ? Boolean(JSON.parse(localStorage.getItem('isAuth') as string)) : false,
     email: localStorage.getItem('email') ? JSON.parse(localStorage.getItem('email') as string) : null,
+    userId: localStorage.getItem('email') ? JSON.parse(localStorage.getItem('userId') as string) : null,
 };
 
 const tokenSlice = createSlice({
@@ -43,6 +45,7 @@ const tokenSlice = createSlice({
 export const isauth = (state: RootState) => state.token.isAuth;
 export const isadmin = (state: RootState) => state.token.isAdmin;
 export const usermail = (state: RootState) => state.token.email;
+export const userID = (state: RootState) => state.token.userId;
 export const { setToken, clearToken } = tokenSlice.actions;
 
 export default tokenSlice.reducer;

@@ -14,13 +14,13 @@ export const ProductList:FC<ProductsProps> = ({LaptopList,MobileList,TVList}) =>
   console.log(TVList);
     return (
      <Grid2 container spacing={{xs:2,md:3}} columns={{xs: 4, sm: 8, md: 12}}>
-      {
+      {/* {
         TVList.map((product:CommonType)=>{
           console.log(product);
           
           return <ProductItem product={product}/>
         })
-      }
+      } */}
      </Grid2>
     );
 };
