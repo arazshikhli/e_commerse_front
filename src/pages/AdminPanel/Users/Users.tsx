@@ -1,7 +1,7 @@
 import React,{useEffect, useState} from 'react';
 import { Box, Paper, TableContainer, Typography,Table, TableHead, TableRow, TableCell, TableBody, IconButton, Button} from '@mui/material';
 import { useGetAllUsersQuery } from '../../../redux/rtk/authApi';
-import { CommonType, Product } from '../../../types/product.interfaces';
+import { CommonType, Product } from '../../../types/types';
 import { use } from 'i18next';
 import  { tableCellClasses } from '@mui/material/TableCell';
 import { styled } from '@mui/material/styles';

@@ -2,7 +2,7 @@ import { Box,CircularProgress,Typography } from '@mui/material'
 import React from 'react'
 import { ProductList } from './ProductList'
 import {useGetProductsQuery}from '../../redux/rtk/productsApi';
-import { CommonType } from '../../types/product.interfaces';
+import { CommonType } from '../../types/types';
 interface IMobile {
   brand: string;
   model: string;

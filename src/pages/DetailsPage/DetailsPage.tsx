@@ -12,7 +12,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { FunctionalityComponent } from './FunctionalityComponent';
 import { DetailImagesComponent } from './DetailImagesComponent';
 import { Features } from './Features';
-import { RenderedProduct,ICart,ICartQuery,ICartItem } from '../../types/product.interfaces';
+import { RenderedProduct,ICart,ICartQuery,ICartItem } from '../../types/types';
 import { useSelector } from 'react-redux';
 import { userID } from '../../redux/baseReduxSlices/authSlice';
 
@@ -101,7 +101,8 @@ export const DetailsPage = () => {
 
   useEffect(()=>{
     console.log(openModal)
-  },[openModal])
+  },[openModal]);
+  
   const handleThumbnailClick = (imageUrl: string) => {
     setCurrentImage(imageUrl);
   };

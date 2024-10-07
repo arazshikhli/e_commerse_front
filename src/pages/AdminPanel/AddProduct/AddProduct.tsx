@@ -1,31 +1,13 @@
 import React, { useEffect,useState } from 'react';
-import { Box, TextField, Button, Typography, FormControl, InputLabel, Select, MenuItem, FormHelperText, IconButton, Alert, AlertTitle, CircularProgress } from '@mui/material';
+import { Box, TextField, Button, Typography, FormControl, InputLabel, Select, MenuItem, FormHelperText, IconButton, Alert, AlertTitle, CircularProgress, Grid } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useCreateProductMutation } from '../../../redux/rtk/productsApi';
 import { convertImageToBase64 } from '../../../helpers/ConvertImages';
-import { FileObject } from '../../../types/product.interfaces';
+import { FileObject } from '../../../types/types';
 import { v4 as uuidv4, v4 } from 'uuid';
 import CloseIcon from '@mui/icons-material/Close';
 import { Close } from '@mui/icons-material';
-
-
-export interface CommonType {
-  brand: string;
-  model: string;
-  price: number;
-  description: string;
-  screenSize: string;
-  categoryName: string;
-  images: FileObject[];
-  _id?: string;
-  comments?: [];
-  ram?: string;
-  processor?: string;
-  storage?: string;
-  graphicsCard?: string;
-  resolution?: string;
-  smartTV?: string;
-}
+import { CommonType } from '../../../types/types';
 
 export const AddProduct = () => {
   const { handleSubmit, watch, register, setValue, reset,formState: { errors } } = useForm<CommonType>({
@@ -225,6 +207,47 @@ export const AddProduct = () => {
               sx={{marginTop:'1em',width:'33.33%'}} 
             />
               </Box>
+            <Box sx={{width:'100%',gap:'2em',display:'flex',flexDirection:'row',justifyContent:'space-around',marginTop:'20px'}}>
+              <TextField sx={{width:'33.33%'}}
+              label='Battery'
+              {...register('battery',{required:'Battery is required'})}
+              error={!!errors.battery}
+              helperText={errors.battery?.message}
+              />
+              <TextField sx={{width:'33.33%'}}
+                label='Operating system'
+                {...register('operatingSystem',{required:'Operating system is required'})}
+                error={!!errors.operatingSystem}
+                helperText={errors.operatingSystem?.message}
+              />
+              <TextField sx={{width:'33.33%'}}
+              label='Display Type'
+              {...register('displayType',{required:'Display type is required'})}
+              error={!!errors.displayType}
+              helperText={errors.displayType?.message}
+              />
+            </Box>
+            <Box sx={{width:'100%',gap:'2em',display:'flex',flexDirection:'row',justifyContent:'space-around',marginTop:'20px'}}>
+              <TextField sx={{width:'33.33%'}}
+              label='Battery capacity'
+              {...register('batteryCapacity',{required:'Battery capacity is required'})}
+              error={!!errors.batteryCapacity}
+              helperText={errors.batteryCapacity?.message}
+              />
+              <TextField sx={{width:'33.33%'}}
+              label='Weight'
+              {...register('weight',{required:'Weight is required'})}
+              error={!!errors.weight}
+              helperText={errors.weight?.message}
+              />
+              <TextField sx={{width:'33.33%'}}
+              label='Network'
+              {...register('network',{required:'Network type is required'})}
+              error={!!errors.network}
+              helperText={errors.network?.message}
+              />
+        
+            </Box>
             
           </>
         )}

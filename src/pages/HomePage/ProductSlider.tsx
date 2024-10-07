@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { CommonType } from '../../types/product.interfaces';
+import { CommonType } from '../../types/types';
 import { Box } from '@mui/material';
 import { ProductItem } from '../Products/ProductItem';
 import Slider from 'react-slick';

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, CircularProgress, Typography } from '@mui/material'
 import { ProductsPage } from '../Products/ProductsPage';
-import { CommonType,RenderedProduct} from '../../types/product.interfaces';
+import { CommonType,RenderedProduct} from '../../types/types';
 import {useGetAllUsersQuery} from '../../redux/rtk/authApi';
 import {useGetProductsQuery} from '../../redux/rtk/productsApi'
 import { ProductSlider } from './ProductSlider';
@@ -70,10 +70,7 @@ export const HomePage = () => {
     }
   });
 
-  const CardClick=(product:RenderedProduct)=>{
-    console.log(product.model);
-    navigate(`products/detail/${product._id}`)
-  }
+ 
   if (isProductsLoading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
@@ -93,27 +90,13 @@ export const HomePage = () => {
                    sx={{
                   display: 'flex',
                   width: '100%',  // Убедитесь, что ширина контейнера фиксирована
-                  flexDirection: 'row',
+                  flexDirection: 'column',
                   marginTop: '60px',
                 }}
            
               >
-                <Box flex={1}></Box>
-  <Box flex={5} sx={{overflow:'hidden'}}>
-    <Box>
-    <Slider  {...settings}>
-     {
-      TVList&& TVList.map((item:RenderedProduct)=>{
-        return <ProductItem product={item} onCardClick={CardClick}/>
-      })
-     }
-    </Slider>
-    </Box>
-
-  </Box>
-  <Box flex={1}>
-
-  </Box>
+         
+                
   </Box>
 
   );

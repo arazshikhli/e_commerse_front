@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
 import React, { FC } from 'react'
-import { RenderedProduct } from '../../types/product.interfaces';
+import { RenderedProduct } from '../../types/types';
 
 interface IFeatures{
   product:RenderedProduct

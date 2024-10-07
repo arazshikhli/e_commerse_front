@@ -1,6 +1,6 @@
-import { Box, Card, CardMedia } from '@mui/material'
+import { Box, Card, CardMedia, Skeleton } from '@mui/material'
 import React, { FC ,memo} from 'react'
-import { RenderedProduct } from '../../types/product.interfaces'
+import { RenderedProduct } from '../../types/types'
 interface ImagesComponentProps{
     product:RenderedProduct|undefined;
     images:string[]|undefined;
@@ -26,15 +26,20 @@ export const DetailImagesComponent:FC<ImagesComponentProps> = memo(({product,ima
 
     {/* Главный блок с большим изображением */}
     <Box sx={{ flex: 1, padding: '20px', borderRadius: '8px' }}>
-      <CardMedia
-        component="img"
-        image={currentImage} 
-        width={500} height={500}
-        
-        alt={product?.model}
-      sx={{objectFit:"contain"}}
-      />
-  
+      {
+        currentImage?(<Card>   <CardMedia
+          component="img"
+          image={currentImage} 
+          width={500} height={500}
+          
+          alt={product?.model}
+        sx={{objectFit:"contain"}}
+        /></Card>
+    ):(<Skeleton    sx={{ bgcolor: 'grey.700' }}
+      variant="rectangular"
+
+      height={400} />)
+      }
     </Box>
   </Box>
   )

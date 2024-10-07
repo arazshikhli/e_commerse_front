@@ -1,5 +1,5 @@
 import React, { FC, memo, useState } from 'react';
-import {RenderedProduct,ICart} from '../../types/product.interfaces'
+import {RenderedProduct,ICart} from '../../types/types'
 import { Box, Button, Typography,IconButton } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import ChatIcon from '@mui/icons-material/Chat';

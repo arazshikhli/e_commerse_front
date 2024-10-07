@@ -5,7 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useSelector,useDispatch } from 'react-redux';
 import {clearToken, isauth,userID,usermail} from '../../redux/baseReduxSlices/authSlice'
 import { Login, Logout } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import Badge from '@mui/material/Badge';
 import {useGetCartQuery} from '../../redux/rtk/productsApi'
@@ -31,8 +31,8 @@ export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggl
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar sx={{ backgroundColor: '#DD38C6',margin:'0' }} component="nav" position='static'>
-        <Toolbar sx={{ display: 'flex', width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-          <Typography>DIGITAL STORE</Typography>
+        <Toolbar sx={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
+         <NavLink to={'/'}> <Typography>DIGITAL STORE</Typography></NavLink>
           <IconButton onClick={() => toggleDrawer(!openDrawer)}>
             {openDrawer ? <CloseIcon /> : <ListIcon />}
           </IconButton>
@@ -54,9 +54,7 @@ export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggl
                   </IconButton>
                   </Box>:<IconButton><Link to={'/auth'}><Login/></Link></IconButton>}
                   <Badge badgeContent={cartLength} color='primary'>
-                  <IconButton>
-                    <ShoppingCartIcon/>
-                  </IconButton>
+                    <NavLink to={'/cart'}><ShoppingCartIcon/></NavLink>
                   </Badge>
 
         </Toolbar>

@@ -1,7 +1,7 @@
 import React, { useState,FC } from 'react';
 import { Card, Grid2, Typography } from '@mui/material';
 import { ProductItem } from './ProductItem';
-import { CommonType } from '../../types/product.interfaces';
+import { CommonType } from '../../types/types';
   interface ProductsProps {
     TVList: CommonType[];
     MobileList: CommonType[];

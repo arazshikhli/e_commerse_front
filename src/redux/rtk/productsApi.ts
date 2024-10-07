@@ -1,61 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { CommonType, ICart, RenderedProduct } from '../../types/product.interfaces';
+import { CommonType, ICart, RenderedProduct } from '../../types/types';
 import { Provider } from 'react-redux';
-interface CommentData{
-    model:string;
-    user:string;
-    commentText:string;
-    productType:string
-}
-interface IMobile {
-    brand: string;
-    model: string;
-    price: number;
-    description: string;
-    screenSize: string;
-    ram: string;
-    processor: string;
-    storage: string;
-    imageURL: string;
-    stock?: number;
-    categoryName:string,
-    _di:string
-  }
-  
-  interface ILaptop {
-    brand: string;
-    model: string;
-    price: number;
-    description: string;
-    screenSize: string;
-    ram: string;
-    processor: string;
-    storage: string;
-    graphicsCard: string;
-    imageURL: string;
-    stock?: number;
-    categoryName?:string
-    comments?:[],
-    _di:string
-  }
-  
-  type Product = IMobile | ILaptop;
-  
-  interface ProductsProps {
-    allProducts: Product[];
-  }
-  interface ICartItem{
-    _id:string;
-    productType:string;
-  productId:RenderedProduct;
-  quantity:number
-  }
-  
-  interface ICartQuery{
-  user:string,
-  _id:string;
-  items:ICartItem[]
-  }
+import {CommentData,ICartQuery} from '../../types/types'
 
 export const productApi=createApi({
     reducerPath:'productApi',

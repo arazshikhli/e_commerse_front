@@ -1,4 +1,4 @@
-import { FileObject } from "../types/product.interfaces";
+import { FileObject } from "../types/types";
 
 export const convertImageToBase64=(files:FileObject[]):Promise<string[]>=>{
     

@@ -2,7 +2,7 @@ import { Alert, Box, Card, CardHeader, Skeleton, Typography,Grid2 } from '@mui/m
 import React from 'react';
 import {useGetProductsQuery} from '../../../redux/rtk/productsApi'
 import { log } from 'console';
-import { CommonType } from '../../../types/product.interfaces';
+import { CommonType } from '../../../types/types';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from 'react-slick';
