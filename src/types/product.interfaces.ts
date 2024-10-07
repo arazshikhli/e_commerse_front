@@ -75,3 +75,24 @@ export interface RenderedProduct{
     size:string;
     originFileObj:File;
   }
+  
+ export interface ICart{
+    userId:string;
+    productId:string;
+    productType:string;
+    quantity:number;
+  }
+
+
+export interface ICartItem{
+  _id:string;
+  productType:string;
+productId:RenderedProduct;
+quantity:number
+}
+
+export interface ICartQuery{
+user:string,
+_id:string;
+items:ICartItem[]
+}

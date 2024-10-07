@@ -1,12 +1,14 @@
-import React, { FC, memo } from 'react';
-import {RenderedProduct} from '../../types/product.interfaces'
+import React, { FC, memo, useState } from 'react';
+import {RenderedProduct,ICart} from '../../types/product.interfaces'
 import { Box, Button, Typography,IconButton } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import ChatIcon from '@mui/icons-material/Chat';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AdsClickIcon from '@mui/icons-material/AdsClick';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-
+import { useSelector } from 'react-redux';
+import {userID} from '../../redux/baseReduxSlices/authSlice'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 const infoBoxStyle={
     width:'48%',
     display:'flex',
@@ -19,11 +21,23 @@ const infoBoxStyle={
 }
 interface detailProps{
     product:RenderedProduct,
-    handleAddToCart:(product:RenderedProduct)=>void
+    handleAddToCart:(cartItem:ICart)=>void,
+    isInCart:boolean
 }
 
 
-export const FunctionalityComponent:FC<detailProps> =memo( ({product,handleAddToCart}) => {
+export const FunctionalityComponent:FC<detailProps> =memo( ({product,handleAddToCart,isInCart}) => {
+  const id=useSelector(userID)
+      const [quantity,setCuantity]=useState(1)
+  // const userId=useSelector(userID)
+      // const productId=product._id
+      // const productType
+      const cartItem = product._id ? {
+        userId: id,
+        productId: product._id,
+        productType: product.categoryName,
+        quantity: quantity
+    } : null;
   return (
     <Box sx={infoBoxStyle}>
         <Box sx={{display:'flex',flexDirection:'column',width:'100%',marginBottom:'2px',padding:'20px',backgroundColor:'#ffff',flex:1,borderRadius:'20px 20px 0 0 '}}>
@@ -50,15 +64,41 @@ export const FunctionalityComponent:FC<detailProps> =memo( ({product,handleAddTo
           <Typography variant='h5' sx={{color:'red'}}>{product?.price}$</Typography><Typography variant='h5' sx={{color:'#7777',marginLeft:'20px',textDecoration:'line-through'}}>{Number(product?.price)+Number(product?.price)*0.10} $</Typography>
         </Box>
         <Box sx={{width:'100%',display:'flex',flexDirection:'row'}}>
+
+        
           <Box sx={{flex:1}}>
-            <Button 
-             onClick={()=>handleAddToCart(product)} sx={{height:'50px',backgroundColor:'red',color:'#ffff',borderRadius:'20px',width:'100%'}}>
-              <IconButton 
-             >
-            <ShoppingCartIcon sx={{fill:'#ffff'}}/>
-            </IconButton>
-            Add to cart
-            </Button>
+          {
+            !isInCart?(<Button 
+              onClick={() => {
+                if (cartItem) {
+                    handleAddToCart(cartItem);
+                }
+            }}
+            sx={{height:'50px',backgroundColor:'red',color:'#ffffff',borderRadius:'20px',width:'100%'}}>
+              <IconButton><ShoppingCartIcon sx={{fill:'#ffffff'}}/></IconButton>
+              Add to Cart
+            </Button>):
+            (<Button sx={{height:'50px',backgroundColor:'#fffff',color:'black',borderRadius:'20px',width:'100%',border:'1px solid black'}}>
+              <IconButton>
+                <CheckCircleIcon sx={{fill:'green',fontSize:'24px'}}/>
+              </IconButton>
+              Added to cart
+            </Button>)
+          }
+            {/* <Button 
+           onClick={() => {
+            if (cartItem) {
+                handleAddToCart(cartItem);
+            }
+        }}  sx={{height:'50px',backgroundColor:isInCart?'#ffff':'red',color:'#ffff',borderRadius:'20px',width:'100%',border:isInCart?'1px solid black':''}}>
+             {
+              !isInCart?(<> <IconButton 
+                >
+               <ShoppingCartIcon sx={{fill:'#ffff'}}/>
+               </IconButton>
+               <Typography>AddTo Cart</Typography></>):(<IconButton><CheckCircleIcon sx={{fill:'green',fontSize:'18px'}}/></IconButton>)
+             }
+            </Button> */}
           </Box>
           <Box sx={{flex:1,display:'flex',flexDirection:'row',marginLeft:'10px'}}>
 

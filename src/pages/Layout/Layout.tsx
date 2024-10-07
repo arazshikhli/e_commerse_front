@@ -1,4 +1,4 @@
-import React, { useState, useCallback,memo} from 'react';
+import React, { useState, useCallback,memo, useMemo} from 'react';
 import { Box, List, ListItem, Typography, Drawer } from '@mui/material';
 import { HeaderComponent } from './Header';
 import { Outlet } from 'react-router-dom';
@@ -20,7 +20,9 @@ export const Layout = memo(() => {
   const user_id=useSelector(userID)
   const {data:Cart,error:cartError,isLoading:isCartLoading}=useGetCartQuery(user_id)
 
-  console.log(user_id);
+  console.log(Cart);
+  
+  const cartItemsQuantity=5;
   
   const toggleDrawer = useCallback((newOpen: boolean) => {
     setOpenDrawer(newOpen);
@@ -52,7 +54,7 @@ export const Layout = memo(() => {
 
   return (
     <div  className='wrapper'>
-      <HeaderComponent openDrawer={openDrawer} toggleDrawer={toggleDrawer} />
+      <HeaderComponent openDrawer={openDrawer} toggleDrawer={toggleDrawer} cartItemsQuantity={cartItemsQuantity}/>
       <div className='main'>
       <Outlet />
         <Drawer open={openDrawer} onClose={() => toggleDrawer(false)}>

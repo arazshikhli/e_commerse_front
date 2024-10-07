@@ -3,18 +3,27 @@ import { AppBar, Box, CssBaseline, IconButton, Toolbar, Typography, TextField } 
 import ListIcon from '@mui/icons-material/List';
 import CloseIcon from '@mui/icons-material/Close';
 import { useSelector,useDispatch } from 'react-redux';
-import {clearToken, isauth,usermail} from '../../redux/baseReduxSlices/authSlice'
+import {clearToken, isauth,userID,usermail} from '../../redux/baseReduxSlices/authSlice'
 import { Login, Logout } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import Badge from '@mui/material/Badge';
+import {useGetCartQuery} from '../../redux/rtk/productsApi'
 interface IHeaderProps {
   openDrawer: boolean;
   toggleDrawer: (newOpen: boolean) => void;
+  cartItemsQuantity:number
 }
 
-export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggleDrawer }) => {
+export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggleDrawer,cartItemsQuantity }) => {
   const dispatch=useDispatch()
   const isAuth=useSelector(isauth)
   const email=useSelector(usermail)
+  const userId=useSelector(userID)
+
+  const {data:userCart,error:kartError,isLoading:isCartLoading}=useGetCartQuery(userId);
+  
+  const cartLength=userCart?.items.length
   const handleLogout=()=>{
     dispatch(clearToken())
   }
@@ -44,6 +53,12 @@ export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggl
                     <Logout/>
                   </IconButton>
                   </Box>:<IconButton><Link to={'/auth'}><Login/></Link></IconButton>}
+                  <Badge badgeContent={cartLength} color='primary'>
+                  <IconButton>
+                    <ShoppingCartIcon/>
+                  </IconButton>
+                  </Badge>
+
         </Toolbar>
 
       </AppBar>

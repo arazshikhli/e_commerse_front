@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { CommonType, RenderedProduct } from '../../types/product.interfaces';
+import { CommonType, ICart, RenderedProduct } from '../../types/product.interfaces';
 import { Provider } from 'react-redux';
 interface CommentData{
     model:string;
@@ -44,6 +44,18 @@ interface IMobile {
   interface ProductsProps {
     allProducts: Product[];
   }
+  interface ICartItem{
+    _id:string;
+    productType:string;
+  productId:RenderedProduct;
+  quantity:number
+  }
+  
+  interface ICartQuery{
+  user:string,
+  _id:string;
+  items:ICartItem[]
+  }
 
 export const productApi=createApi({
     reducerPath:'productApi',
@@ -86,7 +98,7 @@ export const productApi=createApi({
                 query:({ model, productType }) => `/comments/${productType}/${model}`,
                 providesTags:result=>['Comments']
             }),
-            addToCart:builder.mutation<void,RenderedProduct>({
+            addToCart:builder.mutation<void,ICart>({
               query:(cartItem)=>({
                 url:'/cart/add',
                 method:"POST",
@@ -94,10 +106,18 @@ export const productApi=createApi({
               }),
               invalidatesTags:['Cart']
             }),
-            getCart: builder.query({
+            getCart: builder.query<ICartQuery,string>({
               query: (userId) => `/cart/${userId}`, 
               providesTags:['Cart']
               }),
+              updateCartItemQuantity:builder.mutation<void, { userId: string; productId: string; productType: string; quantity: number }>({
+                query:({ userId, productId, productType, quantity }) => ({
+                  url:'/cart/update',
+                  method:'PUT',
+                  body:{userId,productId,productType,quantity}
+                }),
+                invalidatesTags:['Cart']
+              })
         }),
      
      
@@ -108,4 +128,5 @@ export const productApi=createApi({
       useAddToCartMutation,
       useGetCartQuery,
       useGetProductsQuery,
+      useUpdateCartItemQuantityMutation,
       useAddCommentMutation,useLazyGetCommentsQuery,useGetCommentsQuery,useGetProductByIdQuery}=productApi

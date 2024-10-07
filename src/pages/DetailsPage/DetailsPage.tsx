@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useAddToCartMutation, useGetProductByIdQuery } from '../../redux/rtk/productsApi';
+import { useAddToCartMutation, useGetCartQuery, useGetProductByIdQuery } from '../../redux/rtk/productsApi';
 import { Box, Button, Card, CardContent, CardMedia, IconButton, Modal, Typography } from '@mui/material';
 import Youtube from 'react-youtube';
 import YouTubeIcon from '@mui/icons-material/YouTube';
@@ -12,7 +12,11 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { FunctionalityComponent } from './FunctionalityComponent';
 import { DetailImagesComponent } from './DetailImagesComponent';
 import { Features } from './Features';
-import { RenderedProduct } from '../../types/product.interfaces';
+import { RenderedProduct,ICart,ICartQuery,ICartItem } from '../../types/product.interfaces';
+import { useSelector } from 'react-redux';
+import { userID } from '../../redux/baseReduxSlices/authSlice';
+
+
 interface YouTubeEmbedProps {
     videoId: string;
   }
@@ -71,14 +75,29 @@ const infoBoxStyle={
     borderRadius:'10px',
     
 }
+
 export const DetailsPage = () => {
   const { id: productId } = useParams<{ id: string }>();
 
   const { data: product, isLoading, error } = useGetProductByIdQuery(productId!);
+  const userId=useSelector(userID)
+  const {data:CartItems}=useGetCartQuery(userId)
   const [addToCart,{data,isLoading:cartIsLoading}]=useAddToCartMutation()
   const images=product?.imageURL;
   const [currentImage, setCurrentImage] = useState<string | undefined>(product?.imageURL[0]);
   const [openModal,setOpenModal]=useState(false)
+  const [isInCart, setIsInCart] = useState(false); 
+
+  console.log(CartItems);
+  
+  console.log(isInCart);
+
+  useEffect(() => {
+    if (CartItems && product) {
+      const itemInCart = CartItems.items.some((item: ICartItem) => item.productId._id === product._id);
+      setIsInCart(itemInCart);
+    }
+  }, [CartItems, product]);
 
   useEffect(()=>{
     console.log(openModal)
@@ -91,9 +110,10 @@ export const DetailsPage = () => {
   const handleClose = useCallback(() => {
     setOpenModal(false);
   }, []);
-  const handleAddToCart=async(product:RenderedProduct)=>{
+  const handleAddToCart=async(cartItem:ICart)=>{
     try {
-      await addToCart(product)
+      
+      await addToCart(cartItem)
       
     } catch (error) {
       
@@ -115,7 +135,7 @@ export const DetailsPage = () => {
         <Box sx={firstBox}> 
         <DetailImagesComponent currentImage={currentImage} handleThumbnailClick={handleThumbnailClick} images={images} product={product}/>
      
-         <FunctionalityComponent product={product} handleAddToCart={handleAddToCart}/>
+         <FunctionalityComponent product={product} handleAddToCart={handleAddToCart} isInCart={isInCart}/>
     
           </Box>
         <Features product={product}/>
