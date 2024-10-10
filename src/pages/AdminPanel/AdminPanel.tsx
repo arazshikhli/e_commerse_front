@@ -1,64 +1,130 @@
-import React from 'react'
-import { AddModelForm } from './AddModelForm'
-import { Accordion, AccordionDetails, AccordionSummary, Box, Grid2, Typography } from '@mui/material'
-import {useGetProductModelsQuery} from '../../redux/rtk/modelsApi'
-import {IModel,IModelAttribute} from '../../types/product.interfaces'
-import { ArrowDownwardOutlined } from '@mui/icons-material'
-import { AddProductForm } from './AddProduct/AddProductForm'
+import React from 'react';
+import { AddProduct } from './AddProduct/AddProduct';
+import { Users } from './Users/Users';
+import { AllProducts } from './AllProducts/AllProducts';
+import { Statisticks } from './Statistic/Statisticks';
+import { Route, Routes, NavLink, useLocation } from 'react-router-dom';
+import { AppBar, Box, Toolbar, Typography } from '@mui/material';
+import { useTransition, animated } from '@react-spring/web';
+import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined';
+import './style.css';
 
-
-interface ModelData extends IModel{
-  _id:string;
-}
-interface ModelDataAttributes extends IModelAttribute{
-  _id:string
-}
 export const AdminPanel = () => {
-  const {data,isLoading,error} =useGetProductModelsQuery('')
-  console.log(data);
-  
-  return (<Box sx={{
-    display:'flex',
-    width:'100%',
-    flexDirection:'row',
-    // minHeight:'900px',
-    padding:'10px',
-    marginTop:'20px',
-    backgroundImage:'url("/gradient.jpg")',
-    backgroundPosition:'center',
-    backgroundSize:'cover',
-    borderRadius:'1em'
-  }} >
-    <Box sx={{ padding: '10px', margin: '10px',display:'flex',flexDirection:'column',width:'100%' ,alignItems:'center'}}>
-  <Typography
-  sx={{marginBottom:'10px',color:'#DD38C6',letterSpacing:'2px',fontWeight:'600'}}
-  variant='h5'>PRODUCT & CATEGORY ADDING PANEL</Typography>
-  <Box sx={{display:'flex',flexDirection:'row',width:'100%',justifyContent:'space-around'}}>
-  <Box sx={{ marginBottom: '10px' }}>
-    <Accordion>
-      <AccordionSummary expandIcon={<ArrowDownwardOutlined />} aria-controls='panel1-content'>
-        Add Model Form
-      </AccordionSummary>
-      <AccordionDetails>
-        <AddModelForm />
-      </AccordionDetails>
-    </Accordion>
-  </Box>
+  const location = useLocation();
 
-  <Box >
-    <Accordion>
-      <AccordionSummary expandIcon={<ArrowDownwardOutlined />} aria-controls='panel2-content'>
-        Add Product Form
-      </AccordionSummary>
-      <AccordionDetails>
-        <AddProductForm />
-      </AccordionDetails>
-    </Accordion>
-  </Box>
-  </Box>
-  
-</Box>
+  // Анимация перехода между страницами
+  const transitions = useTransition(location, {
+    from: { opacity: 0, transform: 'translate3d(100%, 0, 0)' },
+    enter: { opacity: 1, transform: 'translate3d(0%, 0, 0)' },
+    leave: { opacity: 0, transform: 'translate3d(-50%, 0, 0)' },
+    keys: location.pathname,
+  });
 
-            
-  </Box>)
-}
+  
+  return (
+    <Box sx={{ width:'100%',height:'100%',}}>
+      <AppBar variant="elevation" position="static">
+        <Toolbar
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+          }}
+        >
+          {/* Оборачиваем NavLink в Box через children-функцию */}
+          <NavLink to="addProduct">
+            {({ isActive }) => (
+              <Box
+                sx={{
+                  padding: '10px',
+                  borderRadius: '5px',
+                  backgroundColor: isActive ? '#DD38C6' : 'transparent',
+                  color: isActive ? 'white' : 'inherit',
+                  textDecoration: 'none',
+                  display:'flex',
+                  flexDirection:'column'
+                }}
+              >
+                <Typography>ADD PRODUCT</Typography>
+               {isActive&&<ExpandMoreOutlinedIcon/>}
+              </Box>
+            )}
+          </NavLink>
+          <NavLink to="allproducts">
+            {({ isActive }) => (
+              <Box
+                sx={{
+                  padding: '10px',
+                  borderRadius: '5px',
+                  backgroundColor: isActive ? '#DD38C6' : 'transparent',
+                  color: isActive ? 'white' : 'inherit',
+                  textDecoration: 'none',
+                      display:'flex',
+                  flexDirection:'column'
+                }}
+              >
+               <Typography> ALL PRODUCTS</Typography>
+                {isActive&&<ExpandMoreOutlinedIcon/>}
+              </Box>
+            )}
+          </NavLink>
+          <NavLink to="users">
+            {({ isActive }) => (
+              <Box
+                sx={{
+                  padding: '10px',
+                  borderRadius: '5px',
+                  backgroundColor: isActive ? '#DD38C6' : 'transparent',
+                  color: isActive ? 'white' : 'inherit',
+                  textDecoration: 'none',
+                      display:'flex',
+                  flexDirection:'column'
+                }}
+              >
+                <Typography>USERS</Typography>
+                {isActive&&<ExpandMoreOutlinedIcon/>}
+              </Box>
+            )}
+          </NavLink>
+          <NavLink to="statistics">
+            {({ isActive }) => (
+              <Box
+                sx={{
+                  padding: '10px',
+                  borderRadius: '5px',
+                  backgroundColor: isActive ? '#DD38C6' : 'transparent',
+                  color: isActive ? 'white' : 'inherit',
+                  textDecoration: 'none',
+                      display:'flex',
+                  flexDirection:'column'
+                }}
+              >
+                <Typography>STATISTICS</Typography>
+                {isActive&&<ExpandMoreOutlinedIcon/>}
+              </Box>
+            )}
+          </NavLink>
+        </Toolbar>
+      </AppBar>
+
+      
+      <Box sx={{ 
+    flex: 1, 
+    position: 'relative', 
+    overflowY: 'auto',  // Добавляем прокрутку для контента
+    minHeight: 'calc(100vh - 64px)'  // Учитываем высоту AppBar
+  }}>
+        {transitions((style, location) => (
+          <animated.div style={{ ...style, position: 'absolute', width: '100%',height:'100%' }} className={'animated-page'}>
+            <Routes location={location}>
+              <Route path="addProduct" element={<AddProduct />} />
+              <Route path="users" element={<Users />} />
+              <Route path="allproducts" element={<AllProducts />} />
+              <Route path="statistics" element={<Statisticks />} />
+            </Routes>
+          </animated.div>
+        ))}
+      </Box>
+    </Box>
+  );
+};

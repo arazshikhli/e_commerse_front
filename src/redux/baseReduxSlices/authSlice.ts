@@ -1,48 +1,38 @@
-import { createSlice,PayloadAction} from "@reduxjs/toolkit";
-import { RootState } from "../store";
-interface AuthToken {
-    token: string | null;
-    isAdmin: boolean;
-    isAuth: boolean;
-    email: string | null;
-}
-
-const initialState: AuthToken = {
-    token: localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token') as string) : null,
-    isAdmin: localStorage.getItem('isAdmin') ? Boolean(JSON.parse(localStorage.getItem('isAdmin') as string)) : false,
-    isAuth: localStorage.getItem('isAuth') ? Boolean(JSON.parse(localStorage.getItem('isAuth') as string)) : false,
-    email: localStorage.getItem('email') ? JSON.parse(localStorage.getItem('email') as string) : null,
-};
-
-const tokenSlice = createSlice({
-    name: 'token',
-    initialState,
-    reducers: {
-        setToken: (state, action: PayloadAction<{ token: string; isAdmin: boolean; email: string }>) => {
-            state.token = action.payload.token;
-            state.isAdmin = action.payload.isAdmin;
-            state.email = action.payload.email;
-            state.isAuth = true;
-            localStorage.setItem('token', JSON.stringify(state.token));
-            localStorage.setItem('isAdmin', JSON.stringify(state.isAdmin));
-            localStorage.setItem('email', JSON.stringify(state.email));
-            localStorage.setItem('isAuth', JSON.stringify(state.isAuth));
-        },
-        clearToken: (state) => {
-            localStorage.removeItem('token');
-            localStorage.removeItem('isAdmin');
-            localStorage.removeItem('email');
-            localStorage.removeItem('isAuth');
-            state.token = null;
-            state.isAdmin = false;
-            state.isAuth = false;
-        },
+import { createSlice } from '@reduxjs/toolkit';
+import {jwtDecode} from 'jwt-decode'
+import { RootState } from '../store';
+const authSlice = createSlice({
+  name: 'auth',
+  initialState: {
+    accessToken: null,
+    refreshToken: null,
+    user: null,
+  },
+  reducers: {
+    setAccessToken: (state, action) => {
+      state.accessToken = action.payload;
+      localStorage.setItem('accessToken', action.payload);
     },
+    setTokens: (state, action) => {
+      const { accessToken, refreshToken } = action.payload;
+      console.log("action: ",action.payload)
+      state.accessToken = accessToken;
+      state.refreshToken = refreshToken;
+      localStorage.setItem('accessToken', JSON.stringify(accessToken));
+      localStorage.setItem('refreshToken', JSON.stringify(refreshToken));
+    },
+
+    logout: (state) => {
+      state.accessToken = null;
+      state.refreshToken = null;
+      state.user = null;
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+    },
+  },
 });
 
-export const isauth = (state: RootState) => state.token.isAuth;
-export const isadmin = (state: RootState) => state.token.isAdmin;
-export const usermail = (state: RootState) => state.token.email;
-export const { setToken, clearToken } = tokenSlice.actions;
+export const tokenFromStore=(state:RootState)=>state.token.accessToken;
 
-export default tokenSlice.reducer;
+export const { setAccessToken, setTokens, logout } = authSlice.actions;
+export default authSlice.reducer;

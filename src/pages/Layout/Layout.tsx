@@ -1,34 +1,56 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback,memo, useMemo} from 'react';
 import { Box, List, ListItem, Typography, Drawer } from '@mui/material';
 import { HeaderComponent } from './Header';
 import { Outlet } from 'react-router-dom';
 import { useGetProductModelsNamesQuery } from '../../redux/rtk/modelsApi';
+import {useTransition} from '@react-spring/web'
+import './style.css'
+import { useGetCartQuery } from '../../redux/rtk/productsApi';
+import { useSelector } from 'react-redux';
+import {} from '../../redux/baseReduxSlices/authSlice'
+import { RootState } from '../../redux/store';
+import { jwtDecode } from 'jwt-decode';
 
 interface modelName {
   categoryName: string;
 }
 
-export const Layout = React.memo(() => {
+export const Layout = memo(() => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const { data: modelsNames } = useGetProductModelsNamesQuery('');
-
   const [openModal, setOpenModal] = useState(false);
   const [hoveredModel, setHoveredModel] = useState<string | null>(null);
+  
+  const accessToken=useSelector((state:RootState)=>state.token.accessToken)
+  let userId: string | null = null;
+  if (accessToken) {
+    try {
+      const decoded: any = jwtDecode(accessToken);
+      userId = decoded?.id; // получаем id пользователя
+    } catch (error) {
+      console.error('Ошибка декодирования токена:', error);
+      userId = null; // Если токен некорректен
+    }
+  }
 
+  const {data:Cart,error:cartError,isLoading:isCartLoading}=useGetCartQuery(userId||'',{
+    skip:!userId
+  })
+
+
+  const cartItemsQuantity=5;
+  
   const toggleDrawer = useCallback((newOpen: boolean) => {
     setOpenDrawer(newOpen);
   }, []);
-
-  // Функция для открытия модального окна при наведении
   const handleMouseEnter = (modelName: string) => {
-    setHoveredModel(modelName); // Устанавливаем текущее название модели
+    setHoveredModel(modelName); 
     setOpenModal(true);
   };
 
-  // Функция для закрытия модального окна при уходе мыши
   const handleMouseLeave = () => {
     setOpenModal(false);
-    setHoveredModel(null); // Сбрасываем название модели
+    setHoveredModel(null); 
   };
   const DrawerList = React.memo(() => (
     <Box
@@ -47,15 +69,15 @@ export const Layout = React.memo(() => {
   ));
 
   return (
-    <Box sx={{ width: '100%', minHeight: '100vh' }}>
-      <HeaderComponent openDrawer={openDrawer} toggleDrawer={toggleDrawer} />
-      <Box sx={{ marginTop: '56px', padding: '10px' }}>
-        <Outlet />
+    <div  className='wrapper'>
+      <HeaderComponent openDrawer={openDrawer} toggleDrawer={toggleDrawer} cartItemsQuantity={cartItemsQuantity}/>
+      <div className='main'>
+      <Outlet />
         <Drawer open={openDrawer} onClose={() => toggleDrawer(false)}>
           <DrawerList />
         </Drawer>
-      </Box>
-      <footer></footer>
-    </Box>
+      </div>
+      <footer className='footer'>Footer</footer>
+    </div>
   );
 });

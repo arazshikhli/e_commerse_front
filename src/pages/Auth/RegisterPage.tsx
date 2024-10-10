@@ -12,11 +12,17 @@ export const RegisterPage = () => {
 
 
   return (
-    <Box sx={{display:'flex',justifyContent:'center',flexDirection:'column',width:'100%',alignItems:'center'}}>
-            <Typography variant='h3' sx={{marginBottom:'20px'}}> Registration </Typography>
+    <Box sx={{   display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      flexDirection: 'column', 
+      width: '100%', 
+      height: '95vh', // Сделаем высоту 100% от viewport height
+      backgroundColor: '#01C6FD' }}>
+           
             <AuthComponent
             authFn={register}
-            buttonType='Register'
+            authType='Register'
             />
     </Box>
 

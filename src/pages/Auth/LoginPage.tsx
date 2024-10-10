@@ -12,11 +12,16 @@ export const LoginPage = () => {
 
 
   return (
-    <Box sx={{display:'flex',justifyContent:'center',flexDirection:'column',width:'100%',alignItems:'center'}}>
-            <Typography variant='h3' sx={{marginBottom:'20px'}}> Login </Typography>
+    <Box sx={{ display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      flexDirection: 'column', 
+      width: '100%', 
+      height: '95vh', 
+      backgroundColor: '#01C6FD' }}>
             <AuthComponent
             authFn={login}
-            buttonType={'Login'}
+            authType={'Login'}
             />
     </Box>
 

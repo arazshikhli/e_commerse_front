@@ -4,12 +4,14 @@ import { useTranslation } from 'react-i18next'
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import {setToken} from '../../redux/baseReduxSlices/authSlice';
+import {setTokens,setAccessToken} from '../../redux/baseReduxSlices/authSlice';
 import { useSelector,useDispatch } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { jwtDecode } from "jwt-decode";
-import { useNavigate } from 'react-router-dom';
-
+import { NavLink, useNavigate,useLocation } from 'react-router-dom';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import PersonIcon from '@mui/icons-material/Person';
+import EmailIcon from '@mui/icons-material/Email';
 
 const formStyle={
 display:'flex',
@@ -18,29 +20,25 @@ flexDirection:'column',
 gap:2,
 }
 interface myForm {
-  name:string|undefined;
+  name?:string|undefined;
   email:string|undefined;
   password:string|undefined
 }
 
 interface AuthComponentProps {
-  authFn:(userData: {name:string, email: string; password: string }) => Promise<any>,
-  buttonType:string
+  authFn:(userData: {name?:string, email: string; password: string }) => Promise<any>,
+  authType:string
 }
- enum AuthEnum{
-  Login='LOGIN',
-  Register="REGISTER"
 
- }
 
-export const AuthComponent:React.FC<AuthComponentProps> = ({authFn,buttonType}) => {
+export const AuthComponent:React.FC<AuthComponentProps> = ({authFn,authType}) => {
   const navigate=useNavigate()
   const dispatch=useDispatch()
-  const isAuthenticated=useSelector((state:RootState)=>state.token.isAuth)
-  const isAdministrator=useSelector((state:RootState)=>state.token.isAdmin)
-  const [authType,setAuthType]=useState(AuthEnum.Login)
-  const [isShowPassword,setIsShowPassword]=useState(false)
+  // const isAuthenticated=useSelector((state:RootState)=>state.token.isAuth)
+  // const isAdministrator=useSelector((state:RootState)=>state.token.isAdmin)
 
+  const [isShowPassword,setIsShowPassword]=useState(false)
+  const location=useLocation()
   const {t}=useTranslation()
   const {register,
     handleSubmit,
@@ -49,33 +47,72 @@ export const AuthComponent:React.FC<AuthComponentProps> = ({authFn,buttonType}) 
   }=useForm<myForm>({
     mode:'onChange'
   })
-
+    
 
     
-  const submit:SubmitHandler<myForm>=async(data)=>{
-    const {name,email,password}=data
-    if(email&&password&&name){
+  const submit: SubmitHandler<myForm> = async (data) => {
+    console.log(authType)
+    const { name, email, password } = data;
+    console.log(name)
+    switch(authType){
+      case 'Register':{
+        if (email && password && name) {
+          try {
+            const response = await authFn({ name, email, password })   
+           
+            if (response && response.data.accessToken && response.data.refreshToken) {
+              // Сохраняем токены в localStorage
+              console.log("refreshToken",response.data.refreshToken)
+              localStorage.setItem('accessToken', JSON.stringify(response.data.accessToken));
+              localStorage.setItem('refreshToken', JSON.stringify(response.data.refreshToken));
+              
+              // Устанавливаем токены в Redux store
+              dispatch(setTokens({
+                accessToken: response.data.accessToken,
+                refreshToken: response.data.refreshToken,
+              }));
+            }
+            
 
-      try{
-        const response=await authFn({name,email,password});
 
-          const decodedToken: any = jwtDecode(response.data.token);
-          const { id, isAdmin, } = decodedToken;
-          dispatch(setToken({ token: response.data.token, isAdmin,email}));
-          localStorage.setItem('token',JSON.stringify(response.data.token))
-          localStorage.setItem('email',JSON.stringify(email))
-          localStorage.setItem('isAdmin',JSON.stringify(isAdmin))
+          } catch (err) {
+            console.log("Error during login:", err);
+          }
+        }
+      
+        break;
       }
-      catch(err){
-        console.log("error during login", err)
+      case "Login":{
+        if (email && password ) {
+          try {
+            const response = await authFn({  email, password });
+            console.log(`email:${email},Password:${password}`);
+            
+            console.log("log response:",response);
+            
+              if(response&&response.data.accessToken&&response.data.refreshToken){
+                console.log(response.data.accessToken);
+                
+                dispatch(setTokens({
+                  accessToken:response.data.accessToken,
+                  refreshToken:response.data.refreshToken
+                }))
+              }        
+      
+          } catch (err) {
+            console.log("Error during login:", err);
+          }
+        }
+      
+        break;
       }
     }
-    reset({email:'',name:'',password:''})
-    if(isAuthenticated){
-        navigate('/')
-    }
+ 
+    reset({ email: '', name: '', password: '' });
   
-  }
+
+  };
+
   const error:SubmitErrorHandler<myForm>=data=>{
     console.log(data);
     
@@ -94,13 +131,54 @@ export const AuthComponent:React.FC<AuthComponentProps> = ({authFn,buttonType}) 
 
   return (
     <Box component='form'
-    sx={formStyle}
+    sx={{      display: 'flex',
+      position: 'relative',
+      width: '500px',
+      flexDirection: 'column',
+      backgroundColor: '#F9FAFB',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: '2em',
+      padding: '2em',
+      height: '500px', // Занимаем всю доступную высоту
+      gap: 2}}
     onSubmit={handleSubmit(submit,error)}
     >
-      <TextField label='Name' 
-      {...register('name',{required:true})}/>
+     <AccountCircleIcon color='primary'
+      sx={{width:'120px',height:'120px',
+      position:'absolute',
+      top:'-50px'
+      }}/>
+      <Typography variant='h3' sx={{color:'#B0B0B0'}}>{location.pathname==='/login'?'Login':'Registration'}</Typography>
+      {
+        location.pathname==='/register'&&   <TextField
+        sx={{width:'90%'}}
+        InputProps={{
+          sx:{
+            borderRadius:'50px'
+          },
+          endAdornment:(
+            <InputAdornment position='end'>
+              <PersonIcon/>
+            </InputAdornment>
+          )
+        }}
+        label='Name' 
+        {...register('name',{required:true})}/>
+      }
 
       <TextField
+      InputProps={{
+        sx:{
+          borderRadius:'50px'
+        },
+        endAdornment:(
+         <InputAdornment position='end'>
+           <EmailIcon/>
+         </InputAdornment>
+        )
+      }}
+      sx={{width:'90%',borderRadius:'5em'}}
            color={eMailError?'error':'primary'}
       label={eMailError?eMailError:'Email'}
       {...register('email', {
@@ -114,11 +192,14 @@ export const AuthComponent:React.FC<AuthComponentProps> = ({authFn,buttonType}) 
        />
 
       <TextField 
+      
+      sx={{width:'90%',borderRadius:'5em'}}
       color={passwordError?'error':'primary'}
       type={isShowPassword?'text':'password'}
        label={passwordError?passwordError:'Password'}
         {...register('password',{required:true})} 
         InputProps={{
+          sx:{borderRadius:'50px'},
           endAdornment:(
             <InputAdornment position='end'>
               <IconButton
@@ -134,7 +215,17 @@ export const AuthComponent:React.FC<AuthComponentProps> = ({authFn,buttonType}) 
         }}
        />
        {eMailError&& <Typography>{eMailError}</Typography>}
-      <Button type='submit' variant='contained'>{buttonType} </Button>
+      <Button
+      sx={{
+        width:'90%',
+        borderRadius:'5em',
+        height:'50px'
+      }}
+      type='submit' variant='contained'>{authType} </Button>
+      <NavLink to={location.pathname==='/register'?'/login':'/register'}
+      
+      ><Typography 
+      variant='h6' sx={{color:'#B0B0B0'}}>{location.pathname==='/register'?'Have an account?':'Create Account'}</Typography></NavLink>
     </Box>
   )
 }

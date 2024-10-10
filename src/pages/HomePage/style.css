@@ -1,0 +1,23 @@
+/* maxHeight:'120px',
+border:'1px solid #ddd',
+display:'flex',
+overflowX:'auto' */
+
+.slideWrapper{
+    max-height: 120px;
+    border:1px solid #ddd;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    max-width: 100%;
+}
+.item {
+    min-width: 110px;
+    height: 110px;
+    line-height: 110px;
+    background-color: #ddd;
+    margin-right: 2px;
+}
+.slideWrapper::-webkit-scrollbar{
+    width: 0;
+}
