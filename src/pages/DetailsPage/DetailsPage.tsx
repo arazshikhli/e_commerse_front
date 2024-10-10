@@ -1,20 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useAddToCartMutation, useGetCartQuery, useGetProductByIdQuery } from '../../redux/rtk/productsApi';
-import { Box, Button, Card, CardContent, CardMedia, IconButton, Modal, Typography } from '@mui/material';
+import { useAddToCartMutation, useGetCartQuery, useGetProductByIdQuery, useUpdateProductViewsMutation } from '../../redux/rtk/productsApi';
+import { Box } from '@mui/material';
 import Youtube from 'react-youtube';
-import YouTubeIcon from '@mui/icons-material/YouTube';
-import StarIcon from '@mui/icons-material/Star';
-import ChatIcon from '@mui/icons-material/Chat';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import AdsClickIcon from '@mui/icons-material/AdsClick';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { FunctionalityComponent } from './FunctionalityComponent';
 import { DetailImagesComponent } from './DetailImagesComponent';
 import { Features } from './Features';
 import { RenderedProduct,ICart,ICartQuery,ICartItem } from '../../types/types';
-import { useSelector } from 'react-redux';
-import { userID } from '../../redux/baseReduxSlices/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
+import { jwtDecode } from 'jwt-decode';
 
 
 interface YouTubeEmbedProps {
@@ -78,48 +73,66 @@ const infoBoxStyle={
 
 export const DetailsPage = () => {
   const { id: productId } = useParams<{ id: string }>();
-
+  const [updateView,{error:viewError,isLoading:isViewLoading}]=useUpdateProductViewsMutation()
   const { data: product, isLoading, error } = useGetProductByIdQuery(productId!);
-  const userId=useSelector(userID)
-  const {data:CartItems}=useGetCartQuery(userId)
+  const dispatch=useDispatch();
+  
+  const accessToken=useSelector((state:RootState)=>state.token.accessToken)
+  let userId: string | '' = '';
+  if (accessToken) {
+    try {
+      const decoded: any = jwtDecode(accessToken);
+      userId = decoded?.id; // получаем id пользователя
+    } catch (error) {
+      console.error('Ошибка декодирования токена:', error);
+      userId = ''; // Если токен некорректен
+    }
+  }
+  const {data:Cart,error:cartError,isLoading:isCartError}=useGetCartQuery(userId||'',{skip:!userId})
   const [addToCart,{data,isLoading:cartIsLoading}]=useAddToCartMutation()
   const images=product?.imageURL;
   const [currentImage, setCurrentImage] = useState<string | undefined>(product?.imageURL[0]);
   const [openModal,setOpenModal]=useState(false)
   const [isInCart, setIsInCart] = useState(false); 
 
-  console.log(CartItems);
-  
-  console.log(isInCart);
 
-  useEffect(() => {
-    if (CartItems && product) {
-      const itemInCart = CartItems.items.some((item: ICartItem) => item.productId._id === product._id);
-      setIsInCart(itemInCart);
-    }
-  }, [CartItems, product]);
 
   useEffect(()=>{
-    console.log(openModal)
-  },[openModal]);
-  
-  const handleThumbnailClick = (imageUrl: string) => {
-    setCurrentImage(imageUrl);
-  };
+     if(!cartError){
+      if(product?.categoryName&& product._id){
+        updateView({id:product._id,category:product?.categoryName})
+        console.log("View: ",product.views);  
+      }
+     }
+  },[productId,updateView,product]);
 
-  const handleOpen = () => setOpenModal(true);
-  const handleClose = useCallback(() => {
-    setOpenModal(false);
+  // useEffect(() => {
+
+  //  if(!cartError){
+  //   if (Cart && product) {
+  //     const itemInCart = Cart.some((item: ICartItem) => item.productId._id === product._id);
+  //     setIsInCart(itemInCart);
+  //   }
+  //  }
+  // }, [CartItems, product]);
+
+
+
+
+  const handleThumbnailClick = useCallback((imageUrl: string) => {
+    setCurrentImage(imageUrl);
   }, []);
-  const handleAddToCart=async(cartItem:ICart)=>{
+
+
+  const handleAddToCart = useCallback(async (cartItem: ICart) => {
+ 
     try {
-      
-      await addToCart(cartItem)
-      
+      await addToCart(cartItem);
+
     } catch (error) {
-      
+      console.error('Error adding to cart', error);
     }
-  } 
+  }, [addToCart]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -129,6 +142,7 @@ export const DetailsPage = () => {
     return <div>Error loading product details</div>;
   }
 
+
   return (
     <Box sx={boxStyles}>
     {
@@ -136,7 +150,7 @@ export const DetailsPage = () => {
         <Box sx={firstBox}> 
         <DetailImagesComponent currentImage={currentImage} handleThumbnailClick={handleThumbnailClick} images={images} product={product}/>
      
-         <FunctionalityComponent product={product} handleAddToCart={handleAddToCart} isInCart={isInCart}/>
+         <FunctionalityComponent product={product} handleAddToCart={handleAddToCart} isInCart={isInCart} />
     
           </Box>
         <Features product={product}/>

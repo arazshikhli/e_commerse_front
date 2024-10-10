@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import {setToken} from '../../redux/baseReduxSlices/authSlice';
+import {setTokens,setAccessToken} from '../../redux/baseReduxSlices/authSlice';
 import { useSelector,useDispatch } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { jwtDecode } from "jwt-decode";
@@ -26,21 +26,17 @@ interface myForm {
 }
 
 interface AuthComponentProps {
-  authFn:(userData: {name:string, email: string; password: string }) => Promise<any>,
-  buttonType:string
+  authFn:(userData: {name?:string, email: string; password: string }) => Promise<any>,
+  authType:string
 }
- enum AuthEnum{
-  Login='LOGIN',
-  Register="REGISTER"
 
- }
 
-export const AuthComponent:React.FC<AuthComponentProps> = ({authFn,buttonType}) => {
+export const AuthComponent:React.FC<AuthComponentProps> = ({authFn,authType}) => {
   const navigate=useNavigate()
   const dispatch=useDispatch()
-  const isAuthenticated=useSelector((state:RootState)=>state.token.isAuth)
-  const isAdministrator=useSelector((state:RootState)=>state.token.isAdmin)
-  const [authType,setAuthType]=useState(AuthEnum.Login)
+  // const isAuthenticated=useSelector((state:RootState)=>state.token.isAuth)
+  // const isAdministrator=useSelector((state:RootState)=>state.token.isAdmin)
+
   const [isShowPassword,setIsShowPassword]=useState(false)
   const location=useLocation()
   const {t}=useTranslation()
@@ -55,39 +51,68 @@ export const AuthComponent:React.FC<AuthComponentProps> = ({authFn,buttonType}) 
 
     
   const submit: SubmitHandler<myForm> = async (data) => {
+    console.log(authType)
     const { name, email, password } = data;
-  
-    if (email && password && name) {
-      try {
-        const response = await authFn({ name, email, password });
-  
-        const token = response.data?.token;
-          console.log("response.da\\",response.data);
-          
-  
-        if (typeof token === 'string') {
-          const decodedToken: any = jwtDecode(token); 
-          const { id, isAdmin } = decodedToken;
-          dispatch(setToken({ token, isAdmin, email }));
-          localStorage.setItem('token', JSON.stringify(token));
-          localStorage.setItem('email', JSON.stringify(email));
-          localStorage.setItem('isAdmin', JSON.stringify(isAdmin));
-          localStorage.setItem('userId',JSON.stringify(id))
-        } else {
-          console.error("Token is missing or not a string.");
+    console.log(name)
+    switch(authType){
+      case 'Register':{
+        if (email && password && name) {
+          try {
+            const response = await authFn({ name, email, password })   
+           
+            if (response && response.data.accessToken && response.data.refreshToken) {
+              // Сохраняем токены в localStorage
+              console.log("refreshToken",response.data.refreshToken)
+              localStorage.setItem('accessToken', JSON.stringify(response.data.accessToken));
+              localStorage.setItem('refreshToken', JSON.stringify(response.data.refreshToken));
+              
+              // Устанавливаем токены в Redux store
+              dispatch(setTokens({
+                accessToken: response.data.accessToken,
+                refreshToken: response.data.refreshToken,
+              }));
+            }
+            
+
+
+          } catch (err) {
+            console.log("Error during login:", err);
+          }
         }
-  
-      } catch (err) {
-        console.log("Error during login:", err);
+      
+        break;
+      }
+      case "Login":{
+        if (email && password ) {
+          try {
+            const response = await authFn({  email, password });
+            console.log(`email:${email},Password:${password}`);
+            
+            console.log("log response:",response);
+            
+              if(response&&response.data.accessToken&&response.data.refreshToken){
+                console.log(response.data.accessToken);
+                
+                dispatch(setTokens({
+                  accessToken:response.data.accessToken,
+                  refreshToken:response.data.refreshToken
+                }))
+              }        
+      
+          } catch (err) {
+            console.log("Error during login:", err);
+          }
+        }
+      
+        break;
       }
     }
-  
+ 
     reset({ email: '', name: '', password: '' });
   
-    if (isAuthenticated) {
-      navigate('/');
-    }
+
   };
+
   const error:SubmitErrorHandler<myForm>=data=>{
     console.log(data);
     
@@ -106,17 +131,17 @@ export const AuthComponent:React.FC<AuthComponentProps> = ({authFn,buttonType}) 
 
   return (
     <Box component='form'
-    sx={{display:'flex',
-      position:'relative',
-      width:'500px',
-      flexDirection:'column',
-      backgroundColor:'#F9FAFB',
-      justifyContent:"center",
-      alignItems:'center',
-      borderRadius:'2em',
-      padding:'2em',
-      height:'500px',
-      gap:2}}
+    sx={{      display: 'flex',
+      position: 'relative',
+      width: '500px',
+      flexDirection: 'column',
+      backgroundColor: '#F9FAFB',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: '2em',
+      padding: '2em',
+      height: '500px', // Занимаем всю доступную высоту
+      gap: 2}}
     onSubmit={handleSubmit(submit,error)}
     >
      <AccountCircleIcon color='primary'
@@ -196,7 +221,7 @@ export const AuthComponent:React.FC<AuthComponentProps> = ({authFn,buttonType}) 
         borderRadius:'5em',
         height:'50px'
       }}
-      type='submit' variant='contained'>{buttonType} </Button>
+      type='submit' variant='contained'>{authType} </Button>
       <NavLink to={location.pathname==='/register'?'/login':'/register'}
       
       ><Typography 

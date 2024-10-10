@@ -150,6 +150,14 @@ export const AddProduct = () => {
           helperText={errors.screenSize?.message}
           sx={{marginTop:'1em',width:'50%'}} 
         />
+           <TextField
+          label="Stock"
+          {...register('stock', { required: 'Stock is required' })}
+          error={!!errors.stock}
+          helperText={errors.stock?.message}
+          sx={{marginTop:'1em',width:'50%'}} 
+        />
+
         </Box>
         {category === 'TV' && (
           <>
@@ -324,8 +332,8 @@ export const AddProduct = () => {
     <Box 
       key={index} 
       sx={{ 
-        width: '300px', 
-        height: '300px', 
+        width: '150px', 
+        height: '150px', 
         display: 'flex', 
         flexDirection: 'column', 
         justifyContent: 'center',
@@ -336,8 +344,8 @@ export const AddProduct = () => {
     >
       <Box 
         sx={{ 
-          width: '250px', 
-          height: '250px', 
+          width: '120px', 
+          height: '120px', 
           backgroundImage: `url(${preview})`, 
           backgroundPosition: 'center', 
           backgroundSize: 'cover', 

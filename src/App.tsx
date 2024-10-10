@@ -9,6 +9,8 @@ import { LoginPage } from './pages/Auth/LoginPage';
 import { ProductsPage } from './pages/Products/ProductsPage';
 import { DetailsPage } from './pages/DetailsPage/DetailsPage';
 import { CartPage } from './pages/CartPage/CartPage';
+import { RequireAdmin } from './helpers/requireAdmin';
+import { RequireAuth } from './helpers/RequireAuth';
 
 function App() {
   return (
@@ -16,12 +18,13 @@ function App() {
      <Routes>
     <Route path='/' element={<Layout/>}>
     <Route path='/' index element={<HomePage/>}/>
-    <Route path='/adminpanel/*' element={<AdminPanel/>}/>
+    
+    <Route path='/adminpanel/*' element={<RequireAdmin><AdminPanel/></RequireAdmin>}/>
     <Route path='/register' element={<RegisterPage/>}/>
     <Route path='/login' element={<LoginPage/>}/>
     <Route path='/products' element={<ProductsPage/>}/>
     <Route path='/products/detail/:id' element={<DetailsPage/>}/>\
-    <Route path='/cart' element={<CartPage/>}/>
+    <Route path='/cart' element={<RequireAuth><CartPage/></RequireAuth>}/>
     </Route>
     </Routes> 
 

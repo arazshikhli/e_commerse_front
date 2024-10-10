@@ -8,6 +8,9 @@ interface ImagesComponentProps{
     currentImage:string|undefined
 }
 export const DetailImagesComponent:FC<ImagesComponentProps> = memo(({product,images,handleThumbnailClick,currentImage}) => {
+
+
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'row', 
     padding: '20px', width:'48%',height:'90%',justifyContent:'center',

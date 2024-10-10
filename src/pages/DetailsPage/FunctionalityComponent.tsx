@@ -7,8 +7,11 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AdsClickIcon from '@mui/icons-material/AdsClick';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useSelector } from 'react-redux';
-import {userID} from '../../redux/baseReduxSlices/authSlice'
+
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { RootState } from '../../redux/store';
+import { jwtDecode } from 'jwt-decode';
 const infoBoxStyle={
     width:'48%',
     display:'flex',
@@ -22,35 +25,61 @@ const infoBoxStyle={
 interface detailProps{
     product:RenderedProduct,
     handleAddToCart:(cartItem:ICart)=>void,
-    isInCart:boolean
+    isInCart:boolean,
+
 }
 
 
 export const FunctionalityComponent:FC<detailProps> =memo( ({product,handleAddToCart,isInCart}) => {
-  const id=useSelector(userID)
+  const accessToken=useSelector((state:RootState)=>state.token.accessToken)
+  let userId: string | null = null;
+  if (accessToken) {
+    try {
+      const decoded: any = jwtDecode(accessToken);
+      userId = decoded?.id; // получаем id пользователя
+    } catch (error) {
+      console.error('Ошибка декодирования токена:', error);
+      userId = null; // Если токен некорректен
+    }
+  }
       const [quantity,setCuantity]=useState(1)
-  // const userId=useSelector(userID)
-      // const productId=product._id
-      // const productType
-      const cartItem = product._id ? {
-        userId: id,
-        productId: product._id,
-        productType: product.categoryName,
-        quantity: quantity
-    } : null;
+     
+      const handleAddToCartClick = () => {
+        if (!userId) {
+          console.error('Пользователь не авторизован!');
+          return;
+        }
+    
+        // Создание cartItem, если product._id доступен
+        if (product._id) {
+          console.log("userId",userId)
+          const cartItem: ICart = {
+            userId: userId as string,
+            productId: product._id,
+            productType: product.categoryName,
+            quantity: quantity,
+          };
+          console.log("cartItem",cartItem);
+          
+          handleAddToCart(cartItem); // Вызов функции добавления в корзину
+        } else {
+          console.error('Не удалось добавить товар в корзину: product._id отсутствует.');
+        }
+      };
+
   return (
     <Box sx={infoBoxStyle}>
         <Box sx={{display:'flex',flexDirection:'column',width:'100%',marginBottom:'2px',padding:'20px',backgroundColor:'#ffff',flex:1,borderRadius:'20px 20px 0 0 '}}>
           <Typography variant='h5' sx={{fontWeight:'600',letterSpacing:'2px'}}>{product?.brand } {product?.model} /{product?.screenSize}</Typography>
           <Box sx={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
             <Box sx={{flex:2,display:'flex',flexDirection:'row'}}>
-              <Box sx={{border:'1px solid gray',display:'flex',flexDirection:'row',borderRadius:'20px',justifyContent:'space-between',alignItems:'end',padding:'5px',marginRight:'10px'}}> 
-                <StarIcon style={{ fill: 'yellow', fontSize: 25,marginRight:'5px' }} />
-              <Typography variant='h6' fontSize={18} color='#777777'>5.0</Typography>
+              <Box sx={{border:'1px solid gray',display:'flex',flexDirection:'row',marginRight:'5px',borderRadius:'20px',justifyContent:'space-between',alignItems:'end',padding:'5px'}}> 
+                <ChatIcon style={{  fontSize: 25,marginRight:'5px' }} />
+              <Typography variant='h6' fontSize={18} color='#777777'>comments {product.comments?.length}</Typography>
               </Box> 
               <Box sx={{border:'1px solid gray',display:'flex',flexDirection:'row',borderRadius:'20px',justifyContent:'space-between',alignItems:'end',padding:'5px'}}> 
-                <ChatIcon style={{  fontSize: 25,marginRight:'5px' }} />
-              <Typography variant='h6' fontSize={18} color='#777777'>comments 1</Typography>
+                <VisibilityIcon style={{  fontSize: 25,marginRight:'5px' }} />
+              <Typography variant='h6' fontSize={18} color='#777777'>{product.views} views </Typography>
               </Box> 
             </Box>
             <Box sx={{flex:5,display:'flex',flexDirection:'row',justifyContent:'end'}}>
@@ -69,11 +98,7 @@ export const FunctionalityComponent:FC<detailProps> =memo( ({product,handleAddTo
           <Box sx={{flex:1}}>
           {
             !isInCart?(<Button 
-              onClick={() => {
-                if (cartItem) {
-                    handleAddToCart(cartItem);
-                }
-            }}
+              onClick={handleAddToCartClick}
             sx={{height:'50px',backgroundColor:'red',color:'#ffffff',borderRadius:'20px',width:'100%'}}>
               <IconButton><ShoppingCartIcon sx={{fill:'#ffffff'}}/></IconButton>
               Add to Cart
@@ -85,20 +110,7 @@ export const FunctionalityComponent:FC<detailProps> =memo( ({product,handleAddTo
               Added to cart
             </Button>)
           }
-            {/* <Button 
-           onClick={() => {
-            if (cartItem) {
-                handleAddToCart(cartItem);
-            }
-        }}  sx={{height:'50px',backgroundColor:isInCart?'#ffff':'red',color:'#ffff',borderRadius:'20px',width:'100%',border:isInCart?'1px solid black':''}}>
-             {
-              !isInCart?(<> <IconButton 
-                >
-               <ShoppingCartIcon sx={{fill:'#ffff'}}/>
-               </IconButton>
-               <Typography>AddTo Cart</Typography></>):(<IconButton><CheckCircleIcon sx={{fill:'green',fontSize:'18px'}}/></IconButton>)
-             }
-            </Button> */}
+      
           </Box>
           <Box sx={{flex:1,display:'flex',flexDirection:'row',marginLeft:'10px'}}>
 

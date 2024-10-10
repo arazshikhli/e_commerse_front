@@ -21,7 +21,6 @@ export interface IMobile {
     _di:string;
     battery:string;
     operatingSystem:string;
-
     displayType:string;
     batteryCapacity:string;
     weight:string;
@@ -40,7 +39,7 @@ export interface IMobile {
     graphicsCard: string;
     imageURL: string;
     stock?: number;
-    categoryName?:string
+    categoryName?:string;
     comments?:[],
     _di:string
   }
@@ -75,6 +74,7 @@ export interface CommonType {
     _id?: string;
     comments?: [];
     ram?: string;
+    stock?:number;
     processor?: string;
     storage?: string;
     graphicsCard?: string;
@@ -86,6 +86,10 @@ export interface CommonType {
     batteryCapacity?:string;
     weight?:string;
     network?:string;
+    WiFi?:string;
+    webCamera?:string;
+    display?:string;
+    usb:string;
   }
   export interface ICart{
     userId:string;
@@ -103,9 +107,10 @@ quantity:number
 }
 
 export interface ICartQuery{
-user:string,
-_id:string;
-items:ICartItem[]
+productId:string,
+productType:string;
+quantity:number;
+_id:string
 }
 export interface RenderedProduct{
   brand: string;
@@ -129,6 +134,8 @@ export interface RenderedProduct{
   batteryCapacity?:string;
   weight?:string;
   network?:string;
+  stock?:number;
+  views?:number;
 }
 
   export interface FileObject{

@@ -6,7 +6,7 @@ import {CommentData,ICartQuery} from '../../types/types'
 export const productApi=createApi({
     reducerPath:'productApi',
     baseQuery:fetchBaseQuery({baseUrl:'http://localhost:5000/api/admin/'}),
-    tagTypes:['Products','Comments','Cart'],
+    tagTypes:['Products','Comments','Cart',"View"],
     endpoints:(builder)=>({
         createProduct: builder.mutation({
             query: (newData) => {
@@ -52,17 +52,25 @@ export const productApi=createApi({
               }),
               invalidatesTags:['Cart']
             }),
-            getCart: builder.query<ICartQuery,string>({
+            getCart: builder.query<ICartQuery[],string>({
               query: (userId) => `/cart/${userId}`, 
               providesTags:['Cart']
               }),
-              updateCartItemQuantity:builder.mutation<void, { userId: string; productId: string; productType: string; quantity: number }>({
-                query:({ userId, productId, productType, quantity }) => ({
+              updateCartItemQuantity:builder.mutation<void, { userId:string,productId: string; productType: string; quantity: number }>({
+                query:({  productId, productType, quantity,userId }) => ({
                   url:'/cart/update',
                   method:'PUT',
-                  body:{userId,productId,productType,quantity}
+                  body:{productId,productType,quantity,userId}
                 }),
                 invalidatesTags:['Cart']
+              }),
+              updateProductViews:builder.mutation<{ views: number }, { id: string, category: string }>({
+                query: ({ id, category }) => ({
+                  url: `/${id}/view`,
+                  method: 'POST',
+                  body: { id, category }, // Передаем id и category в теле запроса
+                }),
+                invalidatesTags:['View']
               })
         }),
      
@@ -75,4 +83,4 @@ export const productApi=createApi({
       useGetCartQuery,
       useGetProductsQuery,
       useUpdateCartItemQuantityMutation,
-      useAddCommentMutation,useLazyGetCommentsQuery,useGetCommentsQuery,useGetProductByIdQuery}=productApi
+      useAddCommentMutation,useLazyGetCommentsQuery,useGetCommentsQuery,useGetProductByIdQuery,useUpdateProductViewsMutation}=productApi

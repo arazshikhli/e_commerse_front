@@ -7,7 +7,10 @@ import {useTransition} from '@react-spring/web'
 import './style.css'
 import { useGetCartQuery } from '../../redux/rtk/productsApi';
 import { useSelector } from 'react-redux';
-import {userID} from '../../redux/baseReduxSlices/authSlice'
+import {} from '../../redux/baseReduxSlices/authSlice'
+import { RootState } from '../../redux/store';
+import { jwtDecode } from 'jwt-decode';
+
 interface modelName {
   categoryName: string;
 }
@@ -17,11 +20,24 @@ export const Layout = memo(() => {
   const { data: modelsNames } = useGetProductModelsNamesQuery('');
   const [openModal, setOpenModal] = useState(false);
   const [hoveredModel, setHoveredModel] = useState<string | null>(null);
-  const user_id=useSelector(userID)
-  const {data:Cart,error:cartError,isLoading:isCartLoading}=useGetCartQuery(user_id)
-
-  console.log(Cart);
   
+  const accessToken=useSelector((state:RootState)=>state.token.accessToken)
+  let userId: string | null = null;
+  if (accessToken) {
+    try {
+      const decoded: any = jwtDecode(accessToken);
+      userId = decoded?.id; // получаем id пользователя
+    } catch (error) {
+      console.error('Ошибка декодирования токена:', error);
+      userId = null; // Если токен некорректен
+    }
+  }
+
+  const {data:Cart,error:cartError,isLoading:isCartLoading}=useGetCartQuery(userId||'',{
+    skip:!userId
+  })
+
+
   const cartItemsQuantity=5;
   
   const toggleDrawer = useCallback((newOpen: boolean) => {
