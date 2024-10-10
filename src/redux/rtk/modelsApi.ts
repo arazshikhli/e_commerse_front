@@ -21,7 +21,7 @@ interface ProductModelsResponse {
 export const productModelsApi = createApi({
     reducerPath: 'modelApi',
     tagTypes: ['Models'],
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000/api/admin/' }),
+    baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_BASE_SERVER_URL_ADMIN||'http://localhost:5000/api/admin/'}),
     endpoints: (builder) => ({
         // Мутация для создания новой модели продукта
         createProductModel: builder.mutation({

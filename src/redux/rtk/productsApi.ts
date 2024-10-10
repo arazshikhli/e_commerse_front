@@ -5,7 +5,7 @@ import {CommentData,ICartQuery} from '../../types/types'
 
 export const productApi=createApi({
     reducerPath:'productApi',
-    baseQuery:fetchBaseQuery({baseUrl:'http://localhost:5000/api/admin/'}),
+    baseQuery:fetchBaseQuery({baseUrl:process.env.REACT_APP_BASE_SERVER_URL_ADMIN||'http://localhost:5000/api/admin/'}),
     tagTypes:['Products','Comments','Cart',"View"],
     endpoints:(builder)=>({
         createProduct: builder.mutation({

@@ -22,7 +22,7 @@ const refreshAccessToken = async (refreshToken: string) => {
 };
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'http://localhost:5000/api/', // Укажите ваш URL
+  baseUrl:process.env.REACT_APP_BASE_SERVER_URL||'http://localhost:5000/api/', // Укажите ваш URL
   prepareHeaders: (headers) => {
     const token = localStorage.getItem('accessToken');
     if (token) {
