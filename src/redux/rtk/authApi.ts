@@ -1,14 +1,13 @@
 import {BaseQueryFn, createApi,FetchArgs,fetchBaseQuery, FetchBaseQueryError} from '@reduxjs/toolkit/query/react'
-import { logout, setAccessToken } from '../baseReduxSlices/authSlice';
+import { logout, setTokens } from '../baseReduxSlices/authSlice';
 
 
 // Функция для обновления токена
-const refreshAccessToken = async (refreshToken: string) => {
+const refreshAccessToken = async () => {
   const response = await fetch('/users/refresh-token', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${refreshToken}`,
+      'Content-Type': 'application/json'
     },
   });
 
@@ -31,8 +30,6 @@ const baseQuery = fetchBaseQuery({
     return headers;
   },
 });
-
-
 const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
   args,
   api,
@@ -41,29 +38,22 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
   let result = await baseQuery(args, api, extraOptions);
 
   if (result.error && result.error.status === 401) {
-    const refreshToken = localStorage.getItem('refreshToken');
-    if (refreshToken) {
-      try {
-        const newAccessToken = await refreshAccessToken(refreshToken);
-        localStorage.setItem('accessToken', newAccessToken);
-        api.dispatch(setAccessToken(newAccessToken));
+    // Если запрос вернул 401 ошибку (истекший accessToken)
+    try {
+      const newAccessToken = await refreshAccessToken();
+      api.dispatch(setTokens(newAccessToken));
 
-        result = await baseQuery(args, api, extraOptions);
-      } catch (error) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        api.dispatch(logout());
-      }
-    } else {
+      // Повторяем запрос с новым accessToken
+      result = await baseQuery(args, api, extraOptions);
+    } catch (error) {
+      // Если обновить токен не удалось
       localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
       api.dispatch(logout());
     }
   }
 
   return result;
 };
-
 
 export const authApi = createApi({
   reducerPath: 'authRTK',
@@ -91,6 +81,7 @@ export const authApi = createApi({
           url: 'users/login',
           method: 'POST',
           body: credentials,
+          credentials:'include'
         })
       }
         

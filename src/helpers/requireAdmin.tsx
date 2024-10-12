@@ -30,7 +30,7 @@ export const RequireAdmin= ({ children }: RequireAdminProps) => {
     }
 
 
-  const isAdministrator = isAdmin; 
+
 
 
   if (isAdmin===false) {

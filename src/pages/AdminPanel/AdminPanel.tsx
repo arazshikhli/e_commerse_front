@@ -22,7 +22,7 @@ export const AdminPanel = () => {
 
   
   return (
-    <Box sx={{ width:'100%',height:'100%',}}>
+    <Box sx={{ width:'100%',height:'100%', overflow:'hidden'}}>
       <AppBar variant="elevation" position="static">
         <Toolbar
           sx={{
@@ -111,8 +111,8 @@ export const AdminPanel = () => {
       <Box sx={{ 
     flex: 1, 
     position: 'relative', 
-    overflowY: 'auto',  // Добавляем прокрутку для контента
-    minHeight: 'calc(100vh - 64px)'  // Учитываем высоту AppBar
+    overflow: 'hidden',  // Добавляем прокрутку для контента
+    minHeight:'90vh'
   }}>
         {transitions((style, location) => (
           <animated.div style={{ ...style, position: 'absolute', width: '100%',height:'100%' }} className={'animated-page'}>

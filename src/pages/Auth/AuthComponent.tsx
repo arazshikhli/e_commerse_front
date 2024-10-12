@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import {setTokens,setAccessToken} from '../../redux/baseReduxSlices/authSlice';
+import {setTokens} from '../../redux/baseReduxSlices/authSlice';
 import { useSelector,useDispatch } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { jwtDecode } from "jwt-decode";

@@ -3,6 +3,10 @@ import { CommonType, ICart, RenderedProduct } from '../../types/types';
 import { Provider } from 'react-redux';
 import {CommentData,ICartQuery} from '../../types/types'
 
+interface CartProducts{
+  product:RenderedProduct,
+  quantity:number
+}
 export const productApi=createApi({
     reducerPath:'productApi',
     baseQuery:fetchBaseQuery({baseUrl:process.env.REACT_APP_BASE_SERVER_URL_ADMIN||'http://localhost:5000/api/admin/'}),
@@ -56,6 +60,11 @@ export const productApi=createApi({
               query: (userId) => `/cart/${userId}`, 
               providesTags:['Cart']
               }),
+              getCartProducts: builder.query<CartProducts[],string>({
+                query: (userId) => `/carts/${userId}`, 
+                providesTags:['Cart']
+                }),
+
               updateCartItemQuantity:builder.mutation<void, { userId:string,productId: string; productType: string; quantity: number }>({
                 query:({  productId, productType, quantity,userId }) => ({
                   url:'/cart/update',
@@ -83,4 +92,5 @@ export const productApi=createApi({
       useGetCartQuery,
       useGetProductsQuery,
       useUpdateCartItemQuantityMutation,
+      useGetCartProductsQuery,
       useAddCommentMutation,useLazyGetCommentsQuery,useGetCommentsQuery,useGetProductByIdQuery,useUpdateProductViewsMutation}=productApi

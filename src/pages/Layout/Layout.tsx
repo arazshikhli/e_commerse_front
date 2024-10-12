@@ -1,9 +1,8 @@
-import React, { useState, useCallback,memo, useMemo} from 'react';
+import React, { useState, useCallback,memo} from 'react';
 import { Box, List, ListItem, Typography, Drawer } from '@mui/material';
 import { HeaderComponent } from './Header';
 import { Outlet } from 'react-router-dom';
 import { useGetProductModelsNamesQuery } from '../../redux/rtk/modelsApi';
-import {useTransition} from '@react-spring/web'
 import './style.css'
 import { useGetCartQuery } from '../../redux/rtk/productsApi';
 import { useSelector } from 'react-redux';
@@ -69,15 +68,31 @@ export const Layout = memo(() => {
   ));
 
   return (
-    <div  className='wrapper'>
-      <HeaderComponent openDrawer={openDrawer} toggleDrawer={toggleDrawer} cartItemsQuantity={cartItemsQuantity}/>
-      <div className='main'>
+
+    <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      minHeight: '100vh',
+      width: '100vw',
+      overflow: 'hidden',
+    }}
+  >
+    <HeaderComponent openDrawer={openDrawer} toggleDrawer={toggleDrawer} cartItemsQuantity={cartItemsQuantity} />
+    
+    {/* Контентная часть с flex-grow: 1 для растягивания */}
+    <Box sx={{ flexGrow: 1, width: '100%' }}>
       <Outlet />
-        <Drawer open={openDrawer} onClose={() => toggleDrawer(false)}>
-          <DrawerList />
-        </Drawer>
-      </div>
-      <footer className='footer'>Footer</footer>
-    </div>
+      <Drawer open={openDrawer} onClose={() => toggleDrawer(false)}>
+        <DrawerList />
+      </Drawer>
+    </Box>
+    
+    {/* Футер */}
+    <footer className='footer' style={{ backgroundColor: '#DD38C6', padding: '20px', textAlign: 'center' }}>
+      Footer
+    </footer>
+  </Box>
+
   );
 });
