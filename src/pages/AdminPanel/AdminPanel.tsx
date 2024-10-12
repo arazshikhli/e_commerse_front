@@ -20,7 +20,7 @@ export const AdminPanel = () => {
     keys: location.pathname,
   });
 
-  
+
   return (
     <Box sx={{ width:'100%',height:'100%', overflow:'hidden'}}>
       <AppBar variant="elevation" position="static">
@@ -31,7 +31,6 @@ export const AdminPanel = () => {
             justifyContent: 'space-around',
           }}
         >
-          {/* Оборачиваем NavLink в Box через children-функцию */}
           <NavLink to="addProduct">
             {({ isActive }) => (
               <Box
@@ -107,15 +106,16 @@ export const AdminPanel = () => {
         </Toolbar>
       </AppBar>
 
-      
-      <Box sx={{ 
-    flex: 1, 
-    position: 'relative', 
+
+      <Box sx={{
+    flex: 1,
+    position: 'relative',
     overflow: 'hidden',  // Добавляем прокрутку для контента
     minHeight:'90vh'
   }}>
         {transitions((style, location) => (
-          <animated.div style={{ ...style, position: 'absolute', width: '100%',height:'100%' }} className={'animated-page'}>
+          <animated.div style={{ ...style, position: 'absolute', width: '100%',height:'100%' }}
+           className={'animated-page'}>
             <Routes location={location}>
               <Route path="addProduct" element={<AddProduct />} />
               <Route path="users" element={<Users />} />

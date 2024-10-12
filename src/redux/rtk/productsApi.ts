@@ -1,12 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { CommonType, ICart, RenderedProduct } from '../../types/types';
 import { Provider } from 'react-redux';
-import {CommentData,ICartQuery} from '../../types/types'
+import {CommentData,ICartQuery,CartProducts} from '../../types/types'
 
-interface CartProducts{
-  product:RenderedProduct,
-  quantity:number
-}
 export const productApi=createApi({
     reducerPath:'productApi',
     baseQuery:fetchBaseQuery({baseUrl:process.env.REACT_APP_BASE_SERVER_URL_ADMIN||'http://localhost:5000/api/admin/'}),
@@ -18,9 +14,9 @@ export const productApi=createApi({
               return {
                 url: '/products',
                 method: 'POST',
-                body: newData, 
+                body: newData,
                 headers: {
-                  Authorization: `Bearer ${token}`, 
+                  Authorization: `Bearer ${token}`,
                 },
               };
             },
@@ -57,11 +53,11 @@ export const productApi=createApi({
               invalidatesTags:['Cart']
             }),
             getCart: builder.query<ICartQuery[],string>({
-              query: (userId) => `/cart/${userId}`, 
+              query: (userId) => `/cart/${userId}`,
               providesTags:['Cart']
               }),
               getCartProducts: builder.query<CartProducts[],string>({
-                query: (userId) => `/carts/${userId}`, 
+                query: (userId) => `/carts/${userId}`,
                 providesTags:['Cart']
                 }),
 
@@ -82,8 +78,8 @@ export const productApi=createApi({
                 invalidatesTags:['View']
               })
         }),
-     
-     
+
+
     })
 
 

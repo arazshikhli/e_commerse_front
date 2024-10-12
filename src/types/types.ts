@@ -1,5 +1,8 @@
 
-
+export interface CartProducts{
+  product:RenderedProduct,
+  quantity:number
+}
 export interface CommentData{
     model:string;
     user:string;
@@ -26,7 +29,7 @@ export interface IMobile {
     weight:string;
     network:string
   }
-  
+
   export interface ILaptop {
     brand: string;
     model: string;
@@ -43,9 +46,9 @@ export interface IMobile {
     comments?:[],
     _di:string
   }
-  
+
   export type Product = IMobile | ILaptop;
-  
+
   interface ProductsProps {
     allProducts: Product[];
   }
@@ -55,7 +58,7 @@ export interface IMobile {
   productId:RenderedProduct;
   quantity:number
   }
-  
+
   export interface ICartQuery{
   user:string,
   _id:string;
@@ -121,7 +124,7 @@ export interface RenderedProduct{
   categoryName:string;
   imageURL:string[];
   _id?:string;
-  comments?:[];  
+  comments?:[];
   ram?: string;
   processor?: string;
   storage?: string;

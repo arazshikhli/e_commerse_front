@@ -62,7 +62,7 @@ export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggl
   if (accessToken) {
     try {
       const decoded: any = jwtDecode(accessToken);
-      userId = decoded?.id; 
+      userId = decoded?.id;
       email=decoded?.email// получаем id пользователя
     } catch (error) {
       console.error('Ошибка декодирования токена:', error);
@@ -87,9 +87,9 @@ export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggl
     dispatch(logout())
   }
   return (
-<AppBar position='static'>
+<AppBar position='static' sx={{overflow:'hidden'}}>
   <Container maxWidth='md'>
-    <Toolbar disableGutters>
+    <Toolbar disableGutters sx={{overflow:'hidden'}}>
       <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
         <NavLink to={'/'}><Typography
             variant="h6"
@@ -114,6 +114,7 @@ export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggl
                  aria-haspopup="true"
                  onClick={handleOpenNavMenu}
                  color="inherit"
+                 sx={{display:'block'}}
             >
             </IconButton>
             <Menu
@@ -130,7 +131,7 @@ export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggl
             }}
             open={Boolean(anchorElNav)}
             onClose={handleCloseNavMenu}
-            sx={{display:{xs:'block',md:'none'}}}
+            sx={{display:{xs:'block',md:'none',display:'block'}}}
             >
               {
                 pages.map((page)=>(
@@ -140,7 +141,7 @@ export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggl
                 ))
               }
             </Menu>
-            </Box>    
+            </Box>
             <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
             <Typography
             variant="h5"
@@ -182,20 +183,20 @@ export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggl
                 <Avatar alt="Admin" src="/static/images/avatar/2.jpg" />
               </IconButton></NavLink>
             </Tooltip>
-           
+
               </>)
             }
           </Box>
         {accessToken&&(
-            <Box sx={{marginLeft:'100px'}}>     
+            <Box sx={{marginLeft:'100px'}}>
             <NavLink style={{marginRight:'10px'}} to={'/cart'}>
                   <ShoppingCartIcon sx={{fontSize:'30px'}}/>
                 </NavLink>
                 </Box>
         )}
-         <Box sx={{marginLeft:'100px'}}>  
+         <Box sx={{marginLeft:'100px'}}>
                {
-                accessToken?(   
+                accessToken?(
                   <IconButton  onClick={handleLogout} sx={{marginLeft:'100px'}} >
                         <Logout sx={{fontSize:'30px'}}/>
                       </IconButton>

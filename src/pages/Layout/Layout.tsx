@@ -19,7 +19,7 @@ export const Layout = memo(() => {
   const { data: modelsNames } = useGetProductModelsNamesQuery('');
   const [openModal, setOpenModal] = useState(false);
   const [hoveredModel, setHoveredModel] = useState<string | null>(null);
-  
+
   const accessToken=useSelector((state:RootState)=>state.token.accessToken)
   let userId: string | null = null;
   if (accessToken) {
@@ -38,18 +38,18 @@ export const Layout = memo(() => {
 
 
   const cartItemsQuantity=5;
-  
+
   const toggleDrawer = useCallback((newOpen: boolean) => {
     setOpenDrawer(newOpen);
   }, []);
   const handleMouseEnter = (modelName: string) => {
-    setHoveredModel(modelName); 
+    setHoveredModel(modelName);
     setOpenModal(true);
   };
 
   const handleMouseLeave = () => {
     setOpenModal(false);
-    setHoveredModel(null); 
+    setHoveredModel(null);
   };
   const DrawerList = React.memo(() => (
     <Box
@@ -74,20 +74,20 @@ export const Layout = memo(() => {
       display: 'flex',
       flexDirection: 'column',
       minHeight: '100vh',
-      width: '100vw',
+      // width: '100vw',
       overflow: 'hidden',
     }}
   >
     <HeaderComponent openDrawer={openDrawer} toggleDrawer={toggleDrawer} cartItemsQuantity={cartItemsQuantity} />
-    
+
     {/* Контентная часть с flex-grow: 1 для растягивания */}
-    <Box sx={{ flexGrow: 1, width: '100%' }}>
+    <Box sx={{ flexGrow:1, width: '100%' ,overflowX:'hidden'}}>
       <Outlet />
       <Drawer open={openDrawer} onClose={() => toggleDrawer(false)}>
         <DrawerList />
       </Drawer>
     </Box>
-    
+
     {/* Футер */}
     <footer className='footer' style={{ backgroundColor: '#DD38C6', padding: '20px', textAlign: 'center' }}>
       Footer
