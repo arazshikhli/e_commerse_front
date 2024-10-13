@@ -146,8 +146,6 @@ export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggl
             <Typography
             variant="h5"
             noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -177,17 +175,14 @@ export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggl
               isAdmin&&(<>
               <Tooltip title="Admin panel">
               <NavLink to={'/adminpanel'}>  <IconButton
-              onMouseEnter={()=>handleOpenUserMenu}
-              onMouseLeave={()=>handleCloseUserMenu}
               sx={{ p: 0 }}>
-                <Avatar alt="Admin" src="/static/images/avatar/2.jpg" />
+                <Avatar alt={email?email:''} src="/static/images/avatar/2.jpg" />
               </IconButton></NavLink>
             </Tooltip>
-
               </>)
             }
           </Box>
-        {accessToken&&(
+        {accessToken&&!isAdmin&&(
             <Box sx={{marginLeft:'100px'}}>
             <NavLink style={{marginRight:'10px'}} to={'/cart'}>
                   <ShoppingCartIcon sx={{fontSize:'30px'}}/>
@@ -215,38 +210,3 @@ export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggl
   );
 });
 
-
-// <Box sx={{ display: 'flex' }}>
-// <CssBaseline />
-// <AppBar sx={{ backgroundColor: '#DD38C6',margin:'0' }} component="nav" position='static'>
-//   <Toolbar sx={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
-//    <NavLink to={'/'}> <Typography>DIGITAL STORE</Typography></NavLink>
-//     <IconButton onClick={() => toggleDrawer(!openDrawer)}>
-//       {openDrawer ? <CloseIcon /> : <ListIcon />}
-//     </IconButton>
-//     <TextField
-//       sx={{
-//         backgroundColor: 'white',
-//         border: 'none',
-//         borderRadius: '2rem',
-//         '& .MuiOutlinedInput-root': {
-//           '& fieldset': { borderColor: 'transparent' },
-//           '&:hover fieldset': { borderColor: 'transparent' },
-//           '&.Mui-focused fieldset': { borderColor: 'transparent' },
-//         },
-//       }}
-//     />
-//             {accessToken?<Box><Typography>{email}</Typography>
-//             <IconButton onClick={handleLogout}>
-//               <Logout/>
-//             </IconButton>
-//             </Box>:<IconButton><Link to={'/register'}><Login/></Link></IconButton>}
-//             <Badge badgeContent={cartCount} color='primary'>
-//               <NavLink to={'/cart'}><ShoppingCartIcon/></NavLink>
-//             </Badge>
-//             <NavLink to={'adminpanel'}>Admin</NavLink>
-
-//   </Toolbar>
-
-// </AppBar>
-// </Box>

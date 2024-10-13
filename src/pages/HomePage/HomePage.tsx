@@ -11,6 +11,21 @@ import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArro
 import CardCover from '@mui/joy/CardCover';
 import CardContent from '@mui/joy/CardContent';
 import Card from '@mui/joy/Card';
+import { styled } from '@mui/joy/styles';
+import Grid from '@mui/joy/Grid';
+import Sheet from '@mui/joy/Sheet';
+
+const Item = styled(Sheet)(({ theme }) => ({
+  backgroundColor: '#fff',
+  ...theme.typography['body-sm'],
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  borderRadius: 4,
+  color: theme.vars.palette.text.secondary,
+  ...theme.applyStyles('dark', {
+    backgroundColor: theme.palette.background.level1,
+  }),
+}));
 const CustomComponent: React.FC = () => {
   return <div>Контент вашего компонента</div>;
 };
@@ -70,7 +85,7 @@ export const HomePage = () => {
       product.brand.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
     );
   }, [debouncedSearchTerm, aAllProducts]);
-  
+
   const filteredByMobileCategory=useMemo(()=>{
     return memoizedFilteredProducts?.filter((product:RenderedProduct)=>
       product.categoryName==='Mobile'
@@ -88,7 +103,7 @@ export const HomePage = () => {
       product.categoryName==='Laptop'
     )
   },[memoizedFilteredProducts])
-  
+
   useEffect(()=>{
     // console.log('mobiles: ',filteredByMobileCategory)
     // console.log('tv: ',filteredByTVCategory)
@@ -98,10 +113,12 @@ export const HomePage = () => {
     setValue(newValue);
   };
 
-
+const handleMoveDetails=(id:string)=>{
+  navigate(`/products/detail/${id}`)
+  }
   useEffect(()=>{
     // console.log(memoizedFilteredProducts);
-    
+
   },[search])
   const TVList: RenderedProduct[] = [];
   const MobileList: RenderedProduct[] = [];
@@ -179,7 +196,7 @@ const handleLaptopPageChange = (event: React.ChangeEvent<unknown>, page: number)
           <Paper sx={{ position: 'absolute', width: '100%', zIndex: 1000, marginTop: '5px' }}>
             <List><Box>
             <Box sx={{width:'100%',display:'flex',flexDirection:'row'}}>
-                  <Box sx={{flex:1}}>
+                  <Box sx={{width:'40%'}}>
                   <Typography
           onMouseEnter={() => handleMouseEnter('Mobile')}
 
@@ -197,25 +214,40 @@ const handleLaptopPageChange = (event: React.ChangeEvent<unknown>, page: number)
           Laptop
         </Typography>
                   </Box>
-                  <Box sx={{flex:1}}>
-                  <Typography>
+
+                  <Grid
+      container
+      direction="row"
+      spacing={2} // Это заменит rowSpacing и добавит отступы между элементами
+      sx={{ width: '70%' }}
+    >
+
           {
             hoverCategory==='Mobile'?(<>
             {
               filteredByMobileCategory&&filteredByMobileCategory.slice(0, 6).map((mobile:RenderedProduct)=>{
-                return <Card sx={{minWidth:200,marginRight:'10px'}}>
+                return <Grid
+                onClick={()=>{
+                  if(mobile._id){
+                    handleMoveDetails(mobile._id)
+                  }
+                }}
+                sx={{width:'30%',cursor:'pointer'}} >
+                  <Card sx={{marginRight:'10px'}}>
                   <CardCover >
                     <img src={mobile.imageURL[0]}
                     srcSet={mobile.imageURL[0]}
                      style={{
-                      objectFit: 'contain', 
-                      objectPosition: 'center', 
+                      objectFit: 'contain',
+                      objectPosition: 'center',
                       width: '100%',
                       height: '100%',
                   }}
                     />
                   </CardCover>
+                  <CardContent ><Typography sx={{fontSize:'10px',color:'red'}}>{mobile.model}</Typography></CardContent>
                 </Card>
+                </Grid>
               })
             }
             </>):(<>
@@ -230,12 +262,12 @@ const handleLaptopPageChange = (event: React.ChangeEvent<unknown>, page: number)
             }
             </>)
           }
-        </Typography>
-                  </Box>
+
+                  </Grid>
                 </Box>
                 <NavLink style={{color:'blue'}} to={'/filtered'}>Details <KeyboardDoubleArrowRightIcon/></NavLink>
             </Box>
-           
+
               {/* {memoizedFilteredProducts.map((product: RenderedProduct, index: number) => (
                 <Box sx={{width:'100%',display:'flex',flexDirection:'row'}}>
                   <Box sx={{flex:1}}>
@@ -244,7 +276,7 @@ const handleLaptopPageChange = (event: React.ChangeEvent<unknown>, page: number)
                     <Typography>Laptop</Typography>
                   </Box>
                   <Box sx={{flex:1}}>
-                    
+
                   </Box>
                 </Box>
                 // <ListItemButton key={index} onClick={() => navigate(`/products/${product._id}`)}>
@@ -255,7 +287,7 @@ const handleLaptopPageChange = (event: React.ChangeEvent<unknown>, page: number)
           </Paper>
         )}
       </Box>
-     
+
       <Tabs value={value} onChange={handleChange} aria-label="custom tabs example" variant="fullWidth">
         <Tab label="Mobiles" />
         <Tab label="TVs" />
@@ -273,7 +305,7 @@ const handleLaptopPageChange = (event: React.ChangeEvent<unknown>, page: number)
       </TabPanel>
       <TabPanel value={value} index={1}>
       <SelectedList productList={currentTVs} />
-        <Stack spacing={2} sx={{marginTop:'40px'}}> 
+        <Stack spacing={2} sx={{marginTop:'40px'}}>
         <Pagination
         count={Math.ceil((TVList?.length || 0) / itemsPerTVPage)}
         page={currentTVPage}

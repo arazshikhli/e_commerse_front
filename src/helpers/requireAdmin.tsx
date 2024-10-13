@@ -5,7 +5,7 @@ import { useSelector,useDispatch } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 
 interface RequireAdminProps {
-  children: ReactNode; 
+  children: ReactNode;
 }
 interface IToken{
     id:string;
@@ -17,11 +17,14 @@ export const RequireAdmin= ({ children }: RequireAdminProps) => {
   const dispatch=useDispatch();
   const accessToken=useSelector(tokenFromStore);
     let isAdmin:boolean=false
+    let email=''
     if(accessToken){
         try{
             const decoded: IToken = jwtDecode<IToken>(accessToken); // Decode the token correctly
             console.log(decoded)
-            isAdmin = decoded.isAdmin; // Check if the user is an admin
+            isAdmin = decoded.isAdmin;
+            email=decoded.email
+             // Check if the user is an admin
             console.log("isAdmin: ",isAdmin)
         }
         catch(err){
@@ -29,12 +32,8 @@ export const RequireAdmin= ({ children }: RequireAdminProps) => {
         }
     }
 
-
-
-
-
-  if (isAdmin===false) {
-    return <Navigate to={'/register'} state={{ from: location }} />;
+  if (email!=='admin@gmail.com') {
+    return <Navigate to={'/login'} state={{ from: location }} />;
   }
 
   return <>{children}</>;
