@@ -34,7 +34,6 @@ export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggl
   if(accessToken){
     try{
         const decoded: IToken = jwtDecode<IToken>(accessToken); // Decode the token correctly
-        console.log(decoded)
         isAdmin = decoded.isAdmin; // Check if the user is an admin
     }
     catch(err){
@@ -87,7 +86,7 @@ export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggl
     dispatch(logout())
   }
   return (
-<AppBar position='static' sx={{overflow:'hidden'}}>
+<AppBar position='static' sx={{overflow:'hidden',marginBottom:'20px'}}>
   <Container maxWidth='md'>
     <Toolbar disableGutters sx={{overflow:'hidden'}}>
       <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />

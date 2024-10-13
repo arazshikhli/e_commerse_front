@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Box, CircularProgress,  List,  Pagination,  Paper,  Stack,  TextField,  Typography } from '@mui/material'
+import {Box, Button, CircularProgress, List, Pagination, Paper, Stack, TextField, Typography} from '@mui/material'
 import { RenderedProduct} from '../../types/types';
 import {useGetProductsQuery} from '../../redux/rtk/productsApi'
 import {NavLink, useNavigate} from 'react-router-dom';
@@ -76,6 +76,7 @@ export const HomePage = () => {
     setHoverCategory(category);
   };
 
+
   const handleMouseLeave = () => {
     // setHoverCategory('');
   };
@@ -105,8 +106,7 @@ export const HomePage = () => {
   },[memoizedFilteredProducts])
 
   useEffect(()=>{
-    // console.log('mobiles: ',filteredByMobileCategory)
-    // console.log('tv: ',filteredByTVCategory)
+
   },[memoizedFilteredProducts])
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -116,10 +116,10 @@ export const HomePage = () => {
 const handleMoveDetails=(id:string)=>{
   navigate(`/products/detail/${id}`)
   }
-  useEffect(()=>{
-    // console.log(memoizedFilteredProducts);
+  const handleNavigateToFiltered = () => {
+    navigate('/filtered',{ state: {  memoizedFilteredProducts } });
+  };
 
-  },[search])
   const TVList: RenderedProduct[] = [];
   const MobileList: RenderedProduct[] = [];
   const LaptopList: RenderedProduct[] = [];
@@ -262,27 +262,15 @@ const handleLaptopPageChange = (event: React.ChangeEvent<unknown>, page: number)
             }
             </>)
           }
-
                   </Grid>
                 </Box>
-                <NavLink style={{color:'blue'}} to={'/filtered'}>Details <KeyboardDoubleArrowRightIcon/></NavLink>
+              <Button
+                  style={{ color: 'blue', cursor: 'pointer' }}
+                  onClick={handleNavigateToFiltered}
+              >
+                Details <KeyboardDoubleArrowRightIcon />
+              </Button>
             </Box>
-
-              {/* {memoizedFilteredProducts.map((product: RenderedProduct, index: number) => (
-                <Box sx={{width:'100%',display:'flex',flexDirection:'row'}}>
-                  <Box sx={{flex:1}}>
-                    <Typography>Mobile</Typography>
-                    <Typography>TV</Typography>
-                    <Typography>Laptop</Typography>
-                  </Box>
-                  <Box sx={{flex:1}}>
-
-                  </Box>
-                </Box>
-                // <ListItemButton key={index} onClick={() => navigate(`/products/${product._id}`)}>
-                //   <ListItemText primary={product.model} />
-                // </ListItemButton>
-              ))} */}
             </List>
           </Paper>
         )}

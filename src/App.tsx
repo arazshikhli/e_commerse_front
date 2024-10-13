@@ -11,6 +11,7 @@ import { DetailsPage } from './pages/DetailsPage/DetailsPage';
 import { CartPage } from './pages/CartPage/CartPage';
 import { RequireAdmin } from './helpers/requireAdmin';
 import { RequireAuth } from './helpers/RequireAuth';
+import {FilteredListPage} from "./pages/FilteredListPage/FilteredListPage";
 
 function App() {
   return (
@@ -23,7 +24,8 @@ function App() {
     <Route path='/register' element={<RegisterPage/>}/>
     <Route path='/login' element={<LoginPage/>}/>
     <Route path='/products' element={<ProductsPage/>}/>
-    <Route path='/products/detail/:id' element={<DetailsPage/>}/>\
+      <Route path='/filtered' element={<FilteredListPage/>}/>
+    <Route path='/products/detail/:id' element={<DetailsPage/>}/>
     <Route path='/cart' element={<RequireAuth><CartPage/></RequireAuth>}/>
     </Route>
     </Routes> 
