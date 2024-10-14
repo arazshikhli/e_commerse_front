@@ -62,7 +62,6 @@ export const CartPage = () => {
         }
     }
 
-  console.log(CartProducts);
 
     if (error) return <div>Cart is empty</div>
     if (isLoading) return <div>Loading</div>

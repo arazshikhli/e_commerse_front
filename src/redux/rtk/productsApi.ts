@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { CommonType, ICart, RenderedProduct } from '../../types/types';
+import { CommonType, ICart, IMobile, RenderedProduct } from '../../types/types';
 import { Provider } from 'react-redux';
 import {CommentData,ICartQuery,CartProducts} from '../../types/types'
 
@@ -60,6 +60,10 @@ export const productApi=createApi({
                 query: (userId) => `/carts/${userId}`,
                 providesTags:['Cart']
                 }),
+                getProductsByCategory:builder.query<RenderedProduct[],string>({
+                  query:(category)=>`/productsByCategory/${category}`,
+                  providesTags:['Products']
+                }),
 
               updateCartItemQuantity:builder.mutation<void, { userId:string,productId: string; productType: string; quantity: number }>({
                 query:({  productId, productType, quantity,userId }) => ({
@@ -76,7 +80,16 @@ export const productApi=createApi({
                   body: { id, category }, // Передаем id и category в теле запроса
                 }),
                 invalidatesTags:['View']
-              })
+              }),
+              deleteProducts: builder.mutation<void, string[]>({
+                query: (ids) => ({
+                  url: `products`,
+                  method: 'DELETE',
+                  body: { ids }, // Передаем массив ID в теле запроса
+                }),
+                invalidatesTags: ['Products'], // Убедитесь, что используете корректные теги
+              }),
+          
         }),
 
 
@@ -89,4 +102,8 @@ export const productApi=createApi({
       useGetProductsQuery,
       useUpdateCartItemQuantityMutation,
       useGetCartProductsQuery,
-      useAddCommentMutation,useLazyGetCommentsQuery,useGetCommentsQuery,useGetProductByIdQuery,useUpdateProductViewsMutation}=productApi
+      useGetProductsByCategoryQuery,
+      useAddCommentMutation,useLazyGetCommentsQuery,
+      useGetCommentsQuery,useGetProductByIdQuery,
+      useDeleteProductsMutation,
+      useUpdateProductViewsMutation}=productApi

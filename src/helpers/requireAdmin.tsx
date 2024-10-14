@@ -21,11 +21,9 @@ export const RequireAdmin= ({ children }: RequireAdminProps) => {
     if(accessToken){
         try{
             const decoded: IToken = jwtDecode<IToken>(accessToken); // Decode the token correctly
-            console.log(decoded)
             isAdmin = decoded.isAdmin;
             email=decoded.email
              // Check if the user is an admin
-            console.log("isAdmin: ",isAdmin)
         }
         catch(err){
             console.error('Error decoding token:', err);

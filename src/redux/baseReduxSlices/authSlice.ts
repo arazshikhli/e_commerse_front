@@ -23,7 +23,7 @@ const authSlice = createSlice({
   reducers: {
     setTokens: (state, action) => {
       const { accessToken, refreshToken } = action.payload;
-      console.log('action: ', action.payload);
+
       state.accessToken = accessToken;
       state.refreshToken = refreshToken; // Хранится в состоянии, но не в localStorage
 

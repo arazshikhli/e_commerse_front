@@ -101,7 +101,6 @@ export const DetailsPage = () => {
      if(!cartError){
       if(product?.categoryName&& product._id){
         updateView({id:product._id,category:product?.categoryName})
-        console.log("View: ",product.views);  
       }
      }
   },[productId,updateView,product]);

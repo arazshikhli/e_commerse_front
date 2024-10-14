@@ -51,9 +51,7 @@ export const AuthComponent:React.FC<AuthComponentProps> = ({authFn,authType}) =>
 
     
   const submit: SubmitHandler<myForm> = async (data) => {
-    console.log(authType)
     const { name, email, password } = data;
-    console.log(name)
     switch(authType){
       case 'Register':{
         if (email && password && name) {
@@ -62,7 +60,6 @@ export const AuthComponent:React.FC<AuthComponentProps> = ({authFn,authType}) =>
            
             if (response && response.data.accessToken && response.data.refreshToken) {
               // Сохраняем токены в localStorage
-              console.log("refreshToken",response.data.refreshToken)
               localStorage.setItem('accessToken', JSON.stringify(response.data.accessToken));
               localStorage.setItem('refreshToken', JSON.stringify(response.data.refreshToken));
               
@@ -86,13 +83,7 @@ export const AuthComponent:React.FC<AuthComponentProps> = ({authFn,authType}) =>
         if (email && password ) {
           try {
             const response = await authFn({  email, password });
-            console.log(`email:${email},Password:${password}`);
-            
-            console.log("log response:",response);
-            
               if(response&&response.data.accessToken&&response.data.refreshToken){
-                console.log(response.data.accessToken);
-                
                 dispatch(setTokens({
                   accessToken:response.data.accessToken,
                   refreshToken:response.data.refreshToken

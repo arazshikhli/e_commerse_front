@@ -62,13 +62,7 @@ export const AddModelForm = () => {
     return '';
   };
 
-useEffect(()=>{
-if(error){
-  console.log(error);
-  
-}
-},[error])
-  
+
 
   return (
     <Box

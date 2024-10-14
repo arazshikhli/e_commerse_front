@@ -52,14 +52,14 @@ export const FunctionalityComponent:FC<detailProps> =memo( ({product,handleAddTo
     
         // Создание cartItem, если product._id доступен
         if (product._id) {
-          console.log("userId",userId)
+
           const cartItem: ICart = {
             userId: userId as string,
             productId: product._id,
             productType: product.categoryName,
             quantity: quantity,
           };
-          console.log("cartItem",cartItem);
+
           
           handleAddToCart(cartItem); // Вызов функции добавления в корзину
         } else {
