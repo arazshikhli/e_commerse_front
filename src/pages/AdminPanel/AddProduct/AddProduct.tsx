@@ -1,13 +1,13 @@
 import React, { useEffect,useState } from 'react';
-import { Box, TextField, Button, Typography, FormControl, InputLabel, Select, MenuItem, FormHelperText, IconButton, Alert, AlertTitle, CircularProgress, Grid } from '@mui/material';
+import { Box, TextField, Button, Typography, FormControl, 
+  InputLabel, Select, MenuItem, FormHelperText, IconButton, 
+  Alert, AlertTitle, CircularProgress, Grid } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useCreateProductMutation } from '../../../redux/rtk/productsApi';
 import { convertImageToBase64 } from '../../../helpers/ConvertImages';
-import { FileObject } from '../../../types/types';
+import { FileObject,CommonType } from '../../../types/types';
 import { v4 as uuidv4, v4 } from 'uuid';
 import CloseIcon from '@mui/icons-material/Close';
-import { Close } from '@mui/icons-material';
-import { CommonType } from '../../../types/types';
 
 export const AddProduct = () => {
   const { handleSubmit, watch, register, setValue, reset,formState: { errors } } = useForm<CommonType>({
@@ -15,7 +15,7 @@ export const AddProduct = () => {
   });
   const [createProduct, { isLoading, error:addProductError, isSuccess }] = useCreateProductMutation();
   const [imagePreviews, setImagePreviews] = useState<string[]>([]); 
-  const [showAlert, setShowAlert] = useState(false); // Состояние для показа уведомления
+  const [showAlert, setShowAlert] = useState(false); 
 
 
   const submit = async (data: CommonType) => {

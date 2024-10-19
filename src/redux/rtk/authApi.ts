@@ -10,7 +10,6 @@ const refreshAccessToken = async () => {
       'Content-Type': 'application/json'
     },
   });
-
   const data = await response.json();
   if (!response.ok) {
     throw new Error('Failed to refresh token');
@@ -30,6 +29,7 @@ const baseQuery = fetchBaseQuery({
     return headers;
   },
 });
+
 const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
   args,
   api,
@@ -62,7 +62,6 @@ export const authApi = createApi({
   endpoints: (builder) => ({
     reqister: builder.mutation({
       query: (userData) => {
-        console.log(userData);
         
         return ({
           url: 'users/register',
@@ -76,14 +75,15 @@ export const authApi = createApi({
 
     login: builder.mutation({
       query: (credentials) => {
-        console.log(credentials)
+
         return ({
           url: 'users/login',
           method: 'POST',
           body: credentials,
           credentials:'include'
         })
-      }
+      
+      },invalidatesTags:['Users']
         
     }),
 

@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { Card, CardActions, CardContent, CardHeader, CardMedia, Grid2, IconButton, Button, Box } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
-import { CommonType, RenderedProduct } from '../../types/types';
+import { CommonType, RenderedProduct } from '@/types/types';
 interface ProductProps {
   product: RenderedProduct;
   onCardClick: (product: RenderedProduct) => void; 

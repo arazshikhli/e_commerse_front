@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useCreateProductModelMutation } from '../../redux/rtk/modelsApi';
+import { useCreateProductModelMutation } from '@/redux/rtk/modelsApi';
 
 interface Attribute {
   attributeName: string;
@@ -62,13 +62,7 @@ export const AddModelForm = () => {
     return '';
   };
 
-useEffect(()=>{
-if(error){
-  console.log(error);
-  
-}
-},[error])
-  
+
 
   return (
     <Box

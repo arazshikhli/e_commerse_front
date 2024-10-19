@@ -1,6 +1,6 @@
 import { Box, Card, CardMedia, Skeleton } from '@mui/material'
 import React, { FC ,memo} from 'react'
-import { RenderedProduct } from '../../types/types'
+import { RenderedProduct } from '@/types/types'
 interface ImagesComponentProps{
     product:RenderedProduct|undefined;
     images:string[]|undefined;

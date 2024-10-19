@@ -4,7 +4,7 @@ import CardContent from '@mui/joy/CardContent';
 import CardOverflow from '@mui/joy/CardOverflow';
 import Divider from '@mui/joy/Divider';
 import Typography from '@mui/joy/Typography';
-import {RenderedProduct} from "../../../../types/types";
+import {RenderedProduct} from "@/types/types";
 import {FC} from "react";
 import {Box} from "@mui/material";
 

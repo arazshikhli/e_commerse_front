@@ -10,7 +10,13 @@ import { RenderedProduct,ICart,ICartQuery,ICartItem } from '../../types/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { jwtDecode } from 'jwt-decode';
+import {useGetAverageRatingQuery,useUpdateRatingMutation} from '../../redux/rtk/productsApi'
 
+  interface RatingResponse {
+    averageRating: number;
+    totalRatings: number;
+
+  }
 
 interface YouTubeEmbedProps {
     videoId: string;
@@ -74,7 +80,8 @@ const infoBoxStyle={
 export const DetailsPage = () => {
   const { id: productId } = useParams<{ id: string }>();
   const [updateView,{error:viewError,isLoading:isViewLoading}]=useUpdateProductViewsMutation()
-  const { data: product, isLoading, error } = useGetProductByIdQuery(productId!);
+  const [updateRating,{error:ratingError,isLoading:isRatingUpdateLoading,isSuccess:isRatingUpdateSuccess}]=useUpdateRatingMutation()
+  const { data: product, isLoading, error } = useGetProductByIdQuery(productId||'',{skip:!productId});
   const dispatch=useDispatch();
   
   const accessToken=useSelector((state:RootState)=>state.token.accessToken)
@@ -96,12 +103,16 @@ export const DetailsPage = () => {
   const [isInCart, setIsInCart] = useState(false); 
 
 
+  useEffect(()=>{
+    if(product){
+      setCurrentImage(product.imageURL[0])
+    }
+  },[product])
 
   useEffect(()=>{
      if(!cartError){
       if(product?.categoryName&& product._id){
         updateView({id:product._id,category:product?.categoryName})
-        console.log("View: ",product.views);  
       }
      }
   },[productId,updateView,product]);

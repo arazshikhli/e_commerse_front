@@ -1,16 +1,17 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { CommonType, ICart, RenderedProduct } from '../../types/types';
-import { Provider } from 'react-redux';
-import {CommentData,ICartQuery,CartProducts} from '../../types/types'
+import {  ICart, IGetRating, IRatingQuery, IWishList, IWishListQuery, RenderedProduct } from '@/types/types';
+import {CommentData,ICartQuery,CartProducts} from '@/types/types'
 
 export const productApi=createApi({
     reducerPath:'productApi',
     baseQuery:fetchBaseQuery({baseUrl:process.env.REACT_APP_BASE_SERVER_URL_ADMIN||'http://localhost:5000/api/admin/'}),
-    tagTypes:['Products','Comments','Cart',"View"],
+    tagTypes:['Products','Comments','Cart',"View",'WishLists','Rating'],
     endpoints:(builder)=>({
         createProduct: builder.mutation({
             query: (newData) => {
-              const token=localStorage.getItem('token')
+              const token=localStorage.getItem('accessToken')
+              console.log("token");
+              
               return {
                 url: '/products',
                 method: 'POST',
@@ -60,7 +61,35 @@ export const productApi=createApi({
                 query: (userId) => `/carts/${userId}`,
                 providesTags:['Cart']
                 }),
-
+                getProductsByCategory:builder.query<RenderedProduct[],string>({
+                  query:(category)=>`/productsByCategory/${category}`,
+                  providesTags:['Products']
+                }),
+                addToWishList: builder.mutation<void, IWishList>({
+                  query: (wishListItem) => ({
+                    url: '/wish/add',
+                    method: "POST",
+                    body: wishListItem,
+                  }),
+                  // Инвалидируем кэш для определенного пользователя или для всех WishLists
+                  invalidatesTags: ['WishLists']
+                }),
+                removeFromWishList: builder.mutation({
+                  query: ({ userId, productId, productType }) => ({
+                    url: `/wishproducts/${userId}`, 
+                    method: 'DELETE',
+                    body: { productId, productType }, 
+                  }),
+                  invalidatesTags:['WishLists']
+                }),
+                getWishListProducts: builder.query<RenderedProduct[],string>({
+                  query: (userId) => `/wishproducts/${userId}`,
+                  providesTags:['WishLists']
+                  }),
+                  getWishList: builder.query<IWishListQuery[],string>({
+                    query: (userId) => `/wish/${userId}`,
+                    providesTags:(result)=>['WishLists']
+                    }),
               updateCartItemQuantity:builder.mutation<void, { userId:string,productId: string; productType: string; quantity: number }>({
                 query:({  productId, productType, quantity,userId }) => ({
                   url:'/cart/update',
@@ -76,7 +105,57 @@ export const productApi=createApi({
                   body: { id, category }, // Передаем id и category в теле запроса
                 }),
                 invalidatesTags:['View']
+              }),
+              deleteProducts: builder.mutation<void, string[]>({
+                query: (ids) => ({
+                  url: `products`,
+                  method: 'DELETE',
+                  body: { ids }, // Передаем массив ID в теле запроса
+                }),
+                invalidatesTags: ['Products'], // Убедитесь, что используете корректные теги
+              }),
+              updateMobile: builder.mutation({
+                query: ({ id, mobile }) => {
+                  const token=localStorage.getItem('accessToken')
+                  return {
+                    url: `products/mobile/${id}`,
+                    method: 'PUT',
+                    body: mobile,
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                  }
+                },
+                invalidatesTags:['Products']
+              }),
+              updateTV: builder.mutation({
+                query: ({ id, tv }) => {
+                  const token=localStorage.getItem('accessToken')
+                  return {
+                    url: `products/tv/${id}`,
+                    method: 'PUT',
+                    body: tv,
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                  }
+                },
+                invalidatesTags:['Products']
+              }),
+              updateRating:builder.mutation<RenderedProduct,IRatingQuery>({
+                query:({productId,rating,categoryName})=>({
+                  url:`/products/rating/${productId}`,
+                  method:'POST',
+                  body:{rating,categoryName}
+        
+                }),
+                invalidatesTags:['Rating']
+              }),
+              getAverageRating:builder.query<void,IGetRating>({
+                query: ({ productId, categoryName }) => `/products/rating/${productId}?categoryName=${categoryName}`,
+                providesTags:['Rating']
               })
+          
         }),
 
 
@@ -89,4 +168,17 @@ export const productApi=createApi({
       useGetProductsQuery,
       useUpdateCartItemQuantityMutation,
       useGetCartProductsQuery,
-      useAddCommentMutation,useLazyGetCommentsQuery,useGetCommentsQuery,useGetProductByIdQuery,useUpdateProductViewsMutation}=productApi
+      useGetProductsByCategoryQuery,
+      useAddCommentMutation,useLazyGetCommentsQuery,
+      useGetCommentsQuery,useGetProductByIdQuery,
+      useDeleteProductsMutation,
+      useUpdateProductViewsMutation,
+      useUpdateMobileMutation,
+      useUpdateTVMutation,
+      useGetWishListProductsQuery,
+      useGetWishListQuery,
+      useAddToWishListMutation,
+      useRemoveFromWishListMutation,
+      useGetAverageRatingQuery,
+      useUpdateRatingMutation
+    }=productApi

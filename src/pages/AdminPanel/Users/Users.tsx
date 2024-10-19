@@ -41,7 +41,6 @@ export const Users = () => {
   const { data: allUsersData = [], isLoading, error } = useGetAllUsersQuery('');
   const {data,isLoading:isCartLoading}=useGetCartProductsQuery('')
   const [changeRole,setChangeRole]=useState(false)
-  console.log("all users data: ", allUsersData); // Проверить структуру данных
 
   const allUsers = Array.isArray(allUsersData) ? allUsersData : allUsersData.users || [];
   const [cartProductsByUser, setCartProductsByUser] = useState<Record<string, CartProducts[]>>({});
@@ -88,8 +87,7 @@ const rows = allUsers.map((user: User) =>
 
   const UserCart = ({ userId }: { userId: string; }) => {
     const { data: cartProducts = [], isLoading: isCartLoading, error: cartError } = useGetCartProductsQuery(userId);
-      console.log("Cart Products",cartProducts);
-      console.log('UserID:',userId)
+
     if (isCartLoading) return <p>Loading cart for {userId}...</p>;
     if (cartError) return <p>Error loading cart for {userId}</p>;
 
@@ -146,14 +144,11 @@ const rows = allUsers.map((user: User) =>
                   </StyledTableCell>
                   <StyledTableCell align="left">{user.name}</StyledTableCell>
                   <StyledTableCell align="left">{user.email}</StyledTableCell>
-                  <StyledTableCell align="left">{user.isAdmin ? 'Admin' : 'User'}</StyledTableCell>
+                  <StyledTableCell align="left">{Boolean(user.isAdmin)}</StyledTableCell>
                   <StyledTableCell align="left">
                     {
                       <UserCart userId={user._id} />
                     }
-                    {/* {isCartLoading ? 'Loading cart...' : cartProducts.length > 0 ? cartProducts.map((product: RenderedProduct) => (
-                      <Typography key={product._id}>{product.name}</Typography>
-                    )) : 'No products in cart'} */}
                   </StyledTableCell>
                 </StyledTableRow>
               );

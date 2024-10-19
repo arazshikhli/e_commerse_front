@@ -305,5 +305,6 @@ const handleLaptopPageChange = (event: React.ChangeEvent<unknown>, page: number)
         <CustomComponent />
       </TabPanel>
     </Box>
+    
   </Box>
   );};

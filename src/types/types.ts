@@ -1,8 +1,18 @@
 
+export interface IGetRating{
+  productId:string;
+  categoryName:string;
+}
+export interface IRatingQuery{
+  productId:string;
+  rating:number;
+  categoryName:string
+}
 export interface CartProducts{
   product:RenderedProduct,
   quantity:number
 }
+
 export interface CommentData{
     model:string;
     user:string;
@@ -65,6 +75,13 @@ export interface IMobile {
   items:ICartItem[]
   }
 
+  export interface IWishListQuery{
+    _id:string;
+    productId:string;
+    productType:string
+  }
+
+
 
 export interface CommonType {
     brand: string;
@@ -94,13 +111,22 @@ export interface CommonType {
     display?:string;
     usb:string;
   }
+  export interface IToken{
+    id:string;
+    email:string;
+    isAdmin:boolean;
+  }
   export interface ICart{
     userId:string;
     productId:string;
     productType:string;
     quantity:number;
   }
-
+export interface IWishList{
+  userId:string;
+  productId:string;
+  productType:string;
+}
 
 export interface ICartItem{
   _id:string;
@@ -139,6 +165,11 @@ export interface RenderedProduct{
   network?:string;
   stock?:number;
   views?:number;
+  rating?:{
+    average:number;
+    ratingSum:number;
+    totalRatings:number
+  }
 }
 
   export interface FileObject{
