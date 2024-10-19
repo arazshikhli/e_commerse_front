@@ -1,28 +1,22 @@
 import React,{memo, useEffect, useState,MouseEvent} from 'react';
-import { AppBar, Box, CssBaseline, IconButton, Toolbar, Typography, TextField, Container, Menu, Tooltip, Button, Avatar } from '@mui/material';
-import ListIcon from '@mui/icons-material/List';
-import CloseIcon from '@mui/icons-material/Close';
+import { AppBar, Box, IconButton, Toolbar, Typography, Menu, Tooltip, Button, Avatar, Container, Badge } from '@mui/material';
 import { useSelector,useDispatch } from 'react-redux';
 import {logout} from '../../redux/baseReduxSlices/authSlice'
-import { Login, Logout } from '@mui/icons-material';
+import { Favorite, Login, Logout } from '@mui/icons-material';
 import {  NavLink } from 'react-router-dom';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import Badge from '@mui/material/Badge';
 import {useGetCartQuery} from '../../redux/rtk/productsApi'
 import { jwtDecode } from 'jwt-decode';
-import {tokenFromStore,decodeToken} from '../../redux/baseReduxSlices/authSlice';
+import {tokenFromStore} from '../../redux/baseReduxSlices/authSlice';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import { IToken } from '../../types/types';
 interface IHeaderProps {
   openDrawer: boolean;
   toggleDrawer: (newOpen: boolean) => void;
   cartItemsQuantity:number
 }
-interface IToken{
-  id:string;
-  email:string;
-  isAdmin:boolean;
-}
+
 
 const pages = ['Products', 'Pricing', 'Blog'];
 export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggleDrawer,cartItemsQuantity }) => {
@@ -158,7 +152,7 @@ export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggl
           >
             LOGO
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          {/* <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Button
                 key={page}
@@ -168,7 +162,7 @@ export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggl
                 {page}
               </Button>
             ))}
-          </Box>
+          </Box> */}
           <Box sx={{ flexGrow: 0, display:'flex',alignItems:'center'}}>
             {
               isAdmin&&(<>
@@ -188,6 +182,24 @@ export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggl
                 </NavLink>
                 </Box>
         )}
+      
+          {
+            accessToken&&(
+              <Box sx={{marginLeft:'10px',display:'flex',flexDirection:'row',justifyContent:'space-between',width:'100%'}}>
+              <Badge badgeContent={4} color='success'>
+                  <IconButton>
+                <ShoppingCartIcon/>
+              </IconButton>
+              </Badge>
+              <Badge badgeContent={4} color='success'>
+                  <IconButton>
+                <Favorite/>
+              </IconButton>
+              </Badge>
+              </Box>
+            )
+          }
+   
          <Box sx={{marginLeft:'100px'}}>
                {
                 accessToken?(

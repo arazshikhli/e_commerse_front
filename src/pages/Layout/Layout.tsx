@@ -1,4 +1,4 @@
-import React, { useState, useCallback,memo} from 'react';
+import React, { useState, useCallback,memo, Dispatch, SyntheticEvent, FC} from 'react';
 import { Box, List, ListItem, Typography, Drawer } from '@mui/material';
 import { HeaderComponent } from './Header';
 import { Outlet } from 'react-router-dom';
@@ -9,17 +9,23 @@ import { useSelector } from 'react-redux';
 import {} from '../../redux/baseReduxSlices/authSlice'
 import { RootState } from '../../redux/store';
 import { jwtDecode } from 'jwt-decode';
+import {ToastContainer,Bounce} from 'react-toastify';
+import { Snackbar, Alert } from '@mui/material';
 
 interface modelName {
   categoryName: string;
 }
+interface LayoutProps{
+  openSnackBar: boolean;
+  setOpenSnackBar: Dispatch<React.SetStateAction<boolean>>;
+  handleClose: (event?: SyntheticEvent | Event, reason?: string) => void;
+}
 
-export const Layout = memo(() => {
+export const Layout:FC<LayoutProps> = memo(({openSnackBar,setOpenSnackBar,handleClose}) => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const { data: modelsNames } = useGetProductModelsNamesQuery('');
   const [openModal, setOpenModal] = useState(false);
   const [hoveredModel, setHoveredModel] = useState<string | null>(null);
-
   const accessToken=useSelector((state:RootState)=>state.token.accessToken)
   let userId: string | null = null;
   if (accessToken) {
@@ -51,6 +57,8 @@ export const Layout = memo(() => {
     setOpenModal(false);
     setHoveredModel(null);
   };
+  
+
   const DrawerList = React.memo(() => (
     <Box
       sx={{ width: 250, backgroundColor: '#DD38C6', height: '100%', color: 'white' }}
@@ -70,29 +78,43 @@ export const Layout = memo(() => {
   return (
 
     <Box
+  sx={{
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100vh', 
+    overflow: 'hidden',
+  }}
+>
+
+  <HeaderComponent openDrawer={openDrawer} toggleDrawer={toggleDrawer} cartItemsQuantity={cartItemsQuantity} />
+
+  <Box sx={{  width: '100%', overflowX: 'hidden' }}>
+
+    <Outlet />
+    <Drawer open={openDrawer} onClose={() => toggleDrawer(false)}>
+      <DrawerList />
+    </Drawer>
+    <Snackbar open={openSnackBar}  autoHideDuration={6000} onClose={handleClose}  anchorOrigin={{ vertical: 'top', horizontal: 'right' }} >
+        <Alert variant='filled' onClose={handleClose}  severity="success" sx={{ width: '100%' }}>
+          Auth Successful!
+        </Alert>
+      </Snackbar>
+  </Box>
+
+
+  <Box
+    component="footer"
     sx={{
-      display: 'flex',
-      flexDirection: 'column',
-      minHeight: '100vh',
-      // width: '100vw',
-      overflow: 'hidden',
+      backgroundColor: '#DD38C6',
+      padding: '20px',
+      textAlign: 'center',
+      mt: 'auto', 
     }}
   >
-    <HeaderComponent openDrawer={openDrawer} toggleDrawer={toggleDrawer} cartItemsQuantity={cartItemsQuantity} />
-
-    {/* Контентная часть с flex-grow: 1 для растягивания */}
-    <Box sx={{ flexGrow:1, width: '100%' ,overflowX:'hidden'}}>
-      <Outlet />
-      <Drawer open={openDrawer} onClose={() => toggleDrawer(false)}>
-        <DrawerList />
-      </Drawer>
-    </Box>
-
-    {/* Футер */}
-    <footer className='footer' style={{ backgroundColor: '#DD38C6', padding: '20px', textAlign: 'center' }}>
-      Footer
-    </footer>
+    Footer
   </Box>
+
+</Box>
 
   );
 });

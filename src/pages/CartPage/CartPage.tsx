@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
+import { RootState } from '@/redux/store';
 import { jwtDecode } from 'jwt-decode';
 import { useGetCartProductsQuery, useGetProductByIdQuery, useUpdateCartItemQuantityMutation } from '../../redux/rtk/productsApi';
-import { CartProducts, RenderedProduct } from '../../types/types';
+import { CartProducts, RenderedProduct } from '@/types/types';
 import { Box, Button, Card, IconButton, Typography } from '@mui/material';
 import { CheckBox } from '@mui/icons-material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';

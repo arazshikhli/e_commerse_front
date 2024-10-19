@@ -108,23 +108,25 @@ export const AdminPanel = () => {
 
 
       <Box sx={{
-    flex: 1,
-    position: 'relative',
-    overflow: 'hidden',  // Добавляем прокрутку для контента
-    minHeight:'90vh'
-  }}>
-        {transitions((style, location) => (
-          <animated.div style={{ ...style, position: 'absolute', width: '100%',height:'100%' }}
-           className={'animated-page'}>
-            <Routes location={location}>
-              <Route path="addProduct" element={<AddProduct />} />
-              <Route path="users" element={<Users />} />
-              <Route path="allproducts" element={<AllProducts />} />
-              <Route path="statistics" element={<Statisticks />} />
-            </Routes>
-          </animated.div>
-        ))}
-      </Box>
+  flex: 1,
+  position: 'relative',
+  overflow: 'auto',  // Изменяем overflow для правильной прокрутки
+  minHeight: '90vh', // Устанавливаем минимальную высоту для контейнера
+  display: 'flex', // Используем flex для корректного размещения дочерних элементов
+  flexDirection: 'column',
+}}>
+  {transitions((style, location) => (
+    <animated.div style={{ ...style, flexGrow: 1, width: '100%' }}  // Используем flexGrow вместо position: absolute
+     className={'animated-page'}>
+      <Routes location={location}>
+        <Route path="addProduct" element={<AddProduct />} />
+        <Route path="users" element={<Users />} />
+        <Route path="allproducts" element={<AllProducts />} />
+        <Route path="statistics" element={<Statisticks />} />
+      </Routes>
+    </animated.div>
+  ))}
+</Box>
     </Box>
   );
 };

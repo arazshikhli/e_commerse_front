@@ -1,115 +1,98 @@
-import React, { useEffect, useState,Dispatch, SetStateAction} from 'react'
-import {Box, Button, IconButton, InputAdornment, TextField, Typography} from '@mui/material'
-import { useTranslation } from 'react-i18next'
-import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
+import React, { Dispatch, SyntheticEvent, useState } from 'react';
+import { Box, Button, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
+import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import {setTokens} from '../../redux/baseReduxSlices/authSlice';
-import { useSelector,useDispatch } from 'react-redux';
-import { RootState } from '../../redux/store';
-import { jwtDecode } from "jwt-decode";
-import { NavLink, useNavigate,useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
 
-const formStyle={
-display:'flex',
-width:'600px',
-flexDirection:'column',
-gap:2,
+interface RegisterForm {
+  name: string;
+  email: string;
+  password: string;
 }
-interface myForm {
-  name?:string|undefined;
-  email:string|undefined;
-  password:string|undefined
+interface LoginForm {
+  email: string;
+  password: string;
 }
 
 interface AuthComponentProps {
-  authFn:(userData: {name?:string, email: string; password: string }) => Promise<any>,
-  authType:string
+  authFn: (userData: { name?: string; email: string; password: string }) => Promise<any>;
+  authType: string;
+  openSnackBar: boolean;
+  setOpenSnackBar: Dispatch<React.SetStateAction<boolean>>;
+  handleClose: (event?: SyntheticEvent | Event, reason?: string) => void;
 }
 
+export const AuthComponent: React.FC<AuthComponentProps> = ({ authFn, authType,openSnackBar,setOpenSnackBar }) => {
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
-export const AuthComponent:React.FC<AuthComponentProps> = ({authFn,authType}) => {
-  const navigate=useNavigate()
-  const dispatch=useDispatch()
-  // const isAuthenticated=useSelector((state:RootState)=>state.token.isAuth)
-  // const isAdministrator=useSelector((state:RootState)=>state.token.isAdmin)
+  // Динамическая схема валидации
+const RegisterSchema = yup.object().shape({
+  name:  yup.string().required('Name is required'),
+  email: yup.string().email('Invalid email').required('Email is required'),
+  password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+});
 
-  const [isShowPassword,setIsShowPassword]=useState(false)
-  const location=useLocation()
-  const {t}=useTranslation()
-  const {register,
-    handleSubmit,
-    reset,
-    formState:{errors,dirtyFields}
-  }=useForm<myForm>({
-    mode:'onChange'
-  })
-    
+const LoginSchema = yup.object().shape({
+  email: yup.string().email('Invalid email').required('Email is required'),
+  password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+});
 
-    
-  const submit: SubmitHandler<myForm> = async (data) => {
-    const { name, email, password } = data;
-    switch(authType){
-      case 'Register':{
-        if (email && password && name) {
-          try {
-            const response = await authFn({ name, email, password })   
-           
-            if (response && response.data.accessToken && response.data.refreshToken) {
-              // Сохраняем токены в localStorage
-              localStorage.setItem('accessToken', JSON.stringify(response.data.accessToken));
-              localStorage.setItem('refreshToken', JSON.stringify(response.data.refreshToken));
-              
-              // Устанавливаем токены в Redux store
-              dispatch(setTokens({
-                accessToken: response.data.accessToken,
-                refreshToken: response.data.refreshToken,
-              }));
-            }
-            
+// В компоненте AuthComponent
+const { register:LoginRegister, handleSubmit:handleLoginSubmit, formState: { errors:LoginErrors }, reset:LoginReset } = useForm<LoginForm>({
+  resolver: yupResolver(LoginSchema), // используйте корректную схему
+  mode: 'onChange',
+});
+
+const { register:registerRegister, handleSubmit:handleRegisterSubmit, formState: { errors:RegisterErrors }, reset:RegisterReset } = useForm<RegisterForm>({
+  resolver: yupResolver(RegisterSchema), // используйте корректную схему
+  mode: 'onChange',
+});
 
 
-          } catch (err) {
-            console.log("Error during login:", err);
-          }
-        }
-      
-        break;
+  const LoginSubmit: SubmitHandler<LoginForm> = async (data) => {
+    try {
+      const response = await authFn(data);
+      if (response && response.data.accessToken && response.data.refreshToken) {
+        localStorage.setItem('accessToken', JSON.stringify(response.data.accessToken));
+        localStorage.setItem('refreshToken', JSON.stringify(response.data.refreshToken));
+        setOpenSnackBar(true)
+        navigate('/');
       }
-      case "Login":{
-        if (email && password ) {
-          try {
-            const response = await authFn({  email, password });
-              if(response&&response.data.accessToken&&response.data.refreshToken){
-                dispatch(setTokens({
-                  accessToken:response.data.accessToken,
-                  refreshToken:response.data.refreshToken
-                }))
-              }        
-      
-          } catch (err) {
-            console.log("Error during login:", err);
-          }
-        }
-      
-        break;
-      }
+      LoginReset();
+    } catch (err) {
+      console.log('Error during login:', err);
     }
- 
-    reset({ email: '', name: '', password: '' });
-  
-
+  };
+  const RegisterSubmit: SubmitHandler<RegisterForm> = async (data) => {
+    try {
+      const response = await authFn(data);
+      if (response && response.data.accessToken && response.data.refreshToken) {
+        localStorage.setItem('accessToken', JSON.stringify(response.data.accessToken));
+        localStorage.setItem('refreshToken', JSON.stringify(response.data.refreshToken));
+        setOpenSnackBar(true)
+        navigate('/');
+      }
+      RegisterReset();
+    } catch (err) {
+      console.log('Error during login:', err);
+    }
   };
 
-  const error:SubmitErrorHandler<myForm>=data=>{
-    console.log(data);
-    
-  }
-  const eMailError=errors['email']?.message;
-  const passwordError=errors['password']?.message;
+
+  const LoginError: SubmitErrorHandler<LoginForm> = (error) => {
+    console.log(error);
+  };
+  const RegisterError: SubmitErrorHandler<RegisterForm> = (error) => {
+    console.log(error);
+  };
 
   const handleClickShowPassword = () => {
     setIsShowPassword(!isShowPassword);
@@ -119,104 +102,95 @@ export const AuthComponent:React.FC<AuthComponentProps> = ({authFn,authType}) =>
     event.preventDefault();
   };
 
-
   return (
-    <Box component='form'
-    sx={{      display: 'flex',
-      position: 'relative',
-      width: '500px',
-      flexDirection: 'column',
-      backgroundColor: '#F9FAFB',
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: '2em',
-      padding: '2em',
-      height: '500px', // Занимаем всю доступную высоту
-      gap: 2}}
-    onSubmit={handleSubmit(submit,error)}
-    >
-     <AccountCircleIcon color='primary'
-      sx={{width:'120px',height:'120px',
-      position:'absolute',
-      top:'-50px'
-      }}/>
-      <Typography variant='h3' sx={{color:'#B0B0B0'}}>{location.pathname==='/login'?'Login':'Registration'}</Typography>
-      {
-        location.pathname==='/register'&&   <TextField
-        sx={{width:'90%'}}
-        InputProps={{
-          sx:{
-            borderRadius:'50px'
-          },
-          endAdornment:(
-            <InputAdornment position='end'>
-              <PersonIcon/>
-            </InputAdornment>
-          )
-        }}
-        label='Name' 
-        {...register('name',{required:true})}/>
+    <Box
+      component="form"
+      sx={{      display: 'flex',
+        position: 'relative',
+        width: '500px',
+        flexDirection: 'column',
+        backgroundColor: '#F9FAFB',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: '2em',
+        padding: '2em',
+        height: '500px', // Занимаем всю доступную высоту
+        gap: 2}}
+      onSubmit={
+        authType==='Login'?handleLoginSubmit(LoginSubmit,LoginError):
+        handleRegisterSubmit(RegisterSubmit,RegisterError)
       }
+    >
+      <AccountCircleIcon color="primary"
+       sx={{ width: '120px', height: '120px', position: 'absolute', top: '-50px' }} />
+      <Typography variant="h3">{location.pathname === '/login' ? 'Login' : 'Registration'}</Typography>
+
+      {location.pathname === '/register' && (
+        <TextField
+          sx={{ width: '90%' }}
+          InputProps={{
+            sx: { borderRadius: '50px' },
+            endAdornment: (
+              <InputAdornment position="end">
+                <PersonIcon />
+              </InputAdornment>
+            ),
+          }}
+          label="Name"
+          {...registerRegister('name')}
+          error={!!RegisterError.name}
+          helperText={RegisterErrors.name?.message}
+        />
+      )}
 
       <TextField
-      InputProps={{
-        sx:{
-          borderRadius:'50px'
-        },
-        endAdornment:(
-         <InputAdornment position='end'>
-           <EmailIcon/>
-         </InputAdornment>
-        )
-      }}
-      sx={{width:'90%',borderRadius:'5em'}}
-           color={eMailError?'error':'primary'}
-      label={eMailError?eMailError:'Email'}
-      {...register('email', {
-        required: "Email is required",
-        pattern: {
-          value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i,
-          message: "Invalid email address"
-        }
-      })}
-       aria-invalid={errors.email?true:false}
-       />
-
-      <TextField 
-      
-      sx={{width:'90%',borderRadius:'5em'}}
-      color={passwordError?'error':'primary'}
-      type={isShowPassword?'text':'password'}
-       label={passwordError?passwordError:'Password'}
-        {...register('password',{required:true})} 
+        sx={{ width: '90%' }}
         InputProps={{
-          sx:{borderRadius:'50px'},
-          endAdornment:(
-            <InputAdornment position='end'>
+          sx: { borderRadius: '50px' },
+          endAdornment: (
+            <InputAdornment position="end">
+              <EmailIcon />
+            </InputAdornment>
+          ),
+        }}
+        label="Email"
+        {...LoginRegister('email')}
+        error={authType==='Login'? !!LoginError.name:!!RegisterError.name }
+        helperText={authType==='Login'?LoginErrors.email?.message:RegisterErrors.email?.message}
+      />
+
+      <TextField
+        sx={{ width: '90%' }}
+        type={isShowPassword ? 'text' : 'password'}
+        InputProps={{
+          sx: { borderRadius: '50px' },
+          endAdornment: (
+            <InputAdornment position="end">
               <IconButton
-              aria-label='toggle password visibility'
-              onClick={handleClickShowPassword}
-              onMouseDown={handleMouseDownPassword}
-              edge="end"
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
               >
-                {isShowPassword?<VisibilityIcon/>:<VisibilityOffIcon/>}
+                {isShowPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
               </IconButton>
             </InputAdornment>
-          )
+          ),
         }}
-       />
-       {eMailError&& <Typography>{eMailError}</Typography>}
-      <Button
-      sx={{
-        width:'90%',
-        borderRadius:'5em',
-        height:'50px'
-      }}
-      type='submit' variant='contained'>{authType} </Button>
-      <NavLink to={location.pathname==='/register'?'/login':'/register'}
-      
-      ><Typography 
-      variant='h6' sx={{color:'#B0B0B0'}}>{location.pathname==='/register'?'Have an account?':'Create Account'}</Typography></NavLink>
+        label="Password"
+        {...LoginRegister('password')}
+        error={authType==='Login'?!!LoginErrors.password:!!RegisterErrors.password}
+        helperText={authType==='Login'?LoginErrors.password?.message:RegisterErrors.password?.message}
+      />
+
+      <Button sx={{ width: '90%', borderRadius: '50px' }} type="submit" variant="contained">
+        {authType}
+      </Button>
+
+      <NavLink to={location.pathname === '/register' ? '/login' : '/register'}>
+        <Typography variant="h6" color='blue'>
+          {location.pathname === '/register' ? 'Have an account?' : 'Create Account'}
+        </Typography>
+      </NavLink>
     </Box>
-  )
-}
+  );
+};

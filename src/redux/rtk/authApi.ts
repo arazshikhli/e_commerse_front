@@ -10,7 +10,6 @@ const refreshAccessToken = async () => {
       'Content-Type': 'application/json'
     },
   });
-
   const data = await response.json();
   if (!response.ok) {
     throw new Error('Failed to refresh token');
@@ -30,6 +29,7 @@ const baseQuery = fetchBaseQuery({
     return headers;
   },
 });
+
 const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
   args,
   api,
@@ -82,7 +82,8 @@ export const authApi = createApi({
           body: credentials,
           credentials:'include'
         })
-      }
+      
+      },invalidatesTags:['Users']
         
     }),
 

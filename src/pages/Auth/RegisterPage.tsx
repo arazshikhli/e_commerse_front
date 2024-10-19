@@ -1,10 +1,15 @@
-import React, { useState } from 'react'
+import React, { Dispatch, FC, SyntheticEvent, useState } from 'react'
 import { AuthComponent } from './AuthComponent';
 import { Box, Typography } from '@mui/material';
 import {useReqisterMutation} from '../../redux/rtk/authApi'
+interface RegisterPageProps {
+  openSnackBar: boolean;
+  setOpenSnackBar: Dispatch<React.SetStateAction<boolean>>;
+  handleClose: (event?: SyntheticEvent | Event, reason?: string) => void;
+}
 
 
-export const RegisterPage = () => {
+export const RegisterPage:FC<RegisterPageProps>= ({openSnackBar,setOpenSnackBar,handleClose}) => {
 
   const [email,setEmail]=useState<string>()
   const [password,setPassword]=useState<string>()
@@ -23,6 +28,9 @@ export const RegisterPage = () => {
             <AuthComponent
             authFn={register}
             authType='Register'
+            openSnackBar={openSnackBar}
+            setOpenSnackBar={setOpenSnackBar}
+            handleClose={handleClose}
             />
     </Box>
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { RegisterPage } from './pages/Auth/RegisterPage';
 import { Box } from '@mui/material';
 import {Routes,Route} from 'react-router-dom'
@@ -14,17 +14,25 @@ import { RequireAuth } from './helpers/RequireAuth';
 import {FilteredListPage} from "./pages/FilteredListPage/FilteredListPage";
 
 function App() {
+  const [openSnackBar,setOpenSnackBar]=useState(false);
+
+ 
+  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackBar(false);
+  };
   return (
   
      <Routes>
-    <Route path='/' element={<Layout/>}>
+    <Route path='/' element={<Layout openSnackBar={openSnackBar} setOpenSnackBar={setOpenSnackBar} handleClose={handleClose}/>}>
     <Route path='/' index element={<HomePage/>}/>
-    
     <Route path='/adminpanel/*' element={<RequireAdmin><AdminPanel/></RequireAdmin>}/>
-    <Route path='/register' element={<RegisterPage/>}/>
-    <Route path='/login' element={<LoginPage/>}/>
+    <Route path='/register' element={<RegisterPage openSnackBar={openSnackBar} setOpenSnackBar={setOpenSnackBar} handleClose={handleClose}/>}/>
+    <Route path='/login' element={<LoginPage openSnackBar={openSnackBar} setOpenSnackBar={setOpenSnackBar} handleClose={handleClose}/>}/>
     <Route path='/products' element={<ProductsPage/>}/>
-      <Route path='/filtered' element={<FilteredListPage/>}/>
+    <Route path='/filtered' element={<FilteredListPage/>}/>
     <Route path='/products/detail/:id' element={<DetailsPage/>}/>
     <Route path='/cart' element={<RequireAuth><CartPage/></RequireAuth>}/>
     </Route>

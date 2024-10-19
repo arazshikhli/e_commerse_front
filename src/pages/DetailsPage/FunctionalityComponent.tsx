@@ -1,5 +1,5 @@
 import React, { FC, memo, useState } from 'react';
-import {RenderedProduct,ICart} from '../../types/types'
+import {RenderedProduct,ICart} from '@/types/types'
 import { Box, Button, Typography,IconButton } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import ChatIcon from '@mui/icons-material/Chat';
@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { RootState } from '../../redux/store';
+import { RootState } from '@/redux/store';
 import { jwtDecode } from 'jwt-decode';
 const infoBoxStyle={
     width:'48%',
@@ -31,6 +31,7 @@ interface detailProps{
 
 
 export const FunctionalityComponent:FC<detailProps> =memo( ({product,handleAddToCart,isInCart}) => {
+  console.log("Is in cart",isInCart)
   const accessToken=useSelector((state:RootState)=>state.token.accessToken)
   let userId: string | null = null;
   if (accessToken) {
