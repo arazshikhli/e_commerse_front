@@ -1,16 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useAddToCartMutation, useGetCartQuery, useGetProductByIdQuery, useUpdateProductViewsMutation } from '../../redux/rtk/productsApi';
+import { useAddToCartMutation, useAddToWishListMutation, useGetCartProductsQuery, useGetCartQuery, useGetProductByIdQuery, useGetWishListProductsQuery, useUpdateProductViewsMutation } from '../../redux/rtk/productsApi';
 import { Box } from '@mui/material';
-import Youtube from 'react-youtube';
 import { FunctionalityComponent } from './FunctionalityComponent';
 import { DetailImagesComponent } from './DetailImagesComponent';
 import { Features } from './Features';
-import { RenderedProduct,ICart,ICartQuery,ICartItem } from '../../types/types';
+import { IAddCommentQuery, ICart, IWishAdd } from '../../types/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { jwtDecode } from 'jwt-decode';
-import {useGetAverageRatingQuery,useUpdateRatingMutation} from '../../redux/rtk/productsApi'
+import {useGetAverageRatingQuery,useUpdateRatingMutation,useAddCommentMutation,useGetCommentsQuery} from '../../redux/rtk/productsApi'
+import { toast } from 'react-toastify';
+import { CommentsComponent } from './CommentsComponent';
 
   interface RatingResponse {
     averageRating: number;
@@ -18,21 +19,6 @@ import {useGetAverageRatingQuery,useUpdateRatingMutation} from '../../redux/rtk/
 
   }
 
-interface YouTubeEmbedProps {
-    videoId: string;
-  }
-  
-  const YouTubeEmbed: React.FC<YouTubeEmbedProps> = ({ videoId }) => {
-    const opts = {
-      height: '390',
-      width: '640',
-      playerVars: {
-        autoplay: 1,
-      },
-    };
-  
-    return <Youtube videoId={videoId} opts={opts} />;
-  };
   const modalStyle = {
     position: 'absolute',
     top: '50%',
@@ -49,8 +35,6 @@ const boxStyles = {
     width:'100%',
     backgroundColor: '#f0f0f0',
     borderRadius: '8px',
-    padding: '16px',
-    flex: 1,
     display:'flex',
     flexDirection:'column',
     justifyContent:'center',
@@ -61,7 +45,6 @@ const firstBox={
     height:'600px',
     display:'flex',
     flexDirection:'row',
-    gap:'3',
     justifyContent:'space-around',
     alignItems:'center',
     borderRadius:'20px'
@@ -74,7 +57,7 @@ const infoBoxStyle={
     height:'90%',
     border:'none',
     borderRadius:'10px',
-    
+
 }
 
 export const DetailsPage = () => {
@@ -83,7 +66,7 @@ export const DetailsPage = () => {
   const [updateRating,{error:ratingError,isLoading:isRatingUpdateLoading,isSuccess:isRatingUpdateSuccess}]=useUpdateRatingMutation()
   const { data: product, isLoading, error } = useGetProductByIdQuery(productId||'',{skip:!productId});
   const dispatch=useDispatch();
-  
+
   const accessToken=useSelector((state:RootState)=>state.token.accessToken)
   let userId: string | '' = '';
   if (accessToken) {
@@ -95,12 +78,18 @@ export const DetailsPage = () => {
       userId = ''; // Если токен некорректен
     }
   }
-  const {data:Cart,error:cartError,isLoading:isCartError}=useGetCartQuery(userId||'',{skip:!userId})
-  const [addToCart,{data,isLoading:cartIsLoading}]=useAddToCartMutation()
+  const { data:cartProducts,error:cartError,isLoading:isCartLoading}=useGetCartProductsQuery(userId||'',{skip:!userId})
+  const {data:wishList,error:wishListError,isLoading:isWishListLoading}=useGetWishListProductsQuery(userId||'',{skip:!userId})
+  const [addToCart,{error:addCartError,isSuccess:isAddCartSuccess}]=useAddToCartMutation()
+  const [addToWishList,{error:addWishError,isSuccess:isAddWishSuccess}]=useAddToWishListMutation();
+  const {data:averageRating,isLoading:isAverageLoading,error:averageError}=useGetAverageRatingQuery({productId:product?._id||'',categoryName:product?.categoryName||''},{skip:!product?._id||!product?.categoryName})
+  const [addComment,{error:addCommentError,isSuccess:isAddCommentSuccess}]=useAddCommentMutation();
+  const {data:comments,error:commentsError,isLoading:isCommentsLoading}=useGetCommentsQuery({model:product?.model||'',productType:product?.categoryName||''},{skip:!product?.model||!product.categoryName})
   const images=product?.imageURL;
   const [currentImage, setCurrentImage] = useState<string | undefined>(product?.imageURL[0]);
-  const [openModal,setOpenModal]=useState(false)
-  const [isInCart, setIsInCart] = useState(false); 
+  const [isInCart, setIsInCart] = useState(false);
+  const [inWishList,setIsWishList]=useState(false);
+  const [isViewUpdated, setIsViewUpdated] = useState(false);
 
 
   useEffect(()=>{
@@ -109,36 +98,87 @@ export const DetailsPage = () => {
     }
   },[product])
 
-  useEffect(()=>{
-     if(!cartError){
-      if(product?.categoryName&& product._id){
-        updateView({id:product._id,category:product?.categoryName})
+  useEffect(() => {
+    if (product && !isViewUpdated) {
+      if (product.categoryName && product._id) {
+        updateView({ id: product._id, category: product.categoryName });
+        setIsViewUpdated(true);
       }
-     }
-  },[productId,updateView,product]);
+    }
+  }, [product, updateView, isViewUpdated]);
 
-  // useEffect(() => {
+  useEffect(()=>{
+    let inWish=false
+    if(wishList&&product&&product._id){
+      for(let i=0;i<wishList?.length;i++){
+        if(wishList[i].product._id===product._id){
+          inWish=true;
+          break;
+        }
+      }
+      setIsWishList(inWish);
+    }
+  },[wishList])
+  useEffect(() => {
+    let inCart=false;
+    if(cartProducts&&product&&product?._id){
+      for(let i=0;i<cartProducts?.length;i++){
+        if(cartProducts[i].product._id===product._id){
+          inCart=true;
+          break;
+        }
+      }
+      setIsInCart(inCart)
+    }
+  }, [cartProducts]);
 
-  //  if(!cartError){
-  //   if (Cart && product) {
-  //     const itemInCart = Cart.some((item: ICartItem) => item.productId._id === product._id);
-  //     setIsInCart(itemInCart);
-  //   }
-  //  }
-  // }, [CartItems, product]);
-
-
-
+  useEffect(()=>{
+    if(isAddCartSuccess){
+      toast.success('product added to cart successfully')
+    }
+    if(addCartError){
+      toast.warning('Problem in adding')
+    }
+  },[isAddCartSuccess,addCartError])
+  useEffect(()=>{
+    if(isAddWishSuccess){
+      toast.success('product added to wish list successfully')
+    }
+    if(addWishError){
+      toast.warning('Problem in adding')
+    }
+  },[isAddWishSuccess,addWishError])
 
   const handleThumbnailClick = useCallback((imageUrl: string) => {
     setCurrentImage(imageUrl);
   }, []);
 
-
   const handleAddToCart = useCallback(async (cartItem: ICart) => {
- 
+
     try {
       await addToCart(cartItem);
+
+    } catch (error) {
+      console.error('Error adding to cart', error);
+    }
+  }, [addToCart]);
+
+  const handleAddToWishList=useCallback(async(wishListItem:IWishAdd)=>{
+    try{
+      await addToWishList(wishListItem)
+      if(isAddWishSuccess){
+        console.log('success wish')
+      }
+    }
+    catch(err){
+      console.log(err)
+    }
+  },[addToWishList]);
+
+  const handleAddComment = useCallback(async (comment: IAddCommentQuery) => {
+
+    try {
+      await addComment(comment);
 
     } catch (error) {
       console.error('Error adding to cart', error);
@@ -152,22 +192,22 @@ export const DetailsPage = () => {
   if (error) {
     return <div>Error loading product details</div>;
   }
-
-
   return (
     <Box sx={boxStyles}>
     {
       product&&( <>
-        <Box sx={firstBox}> 
+        <Box sx={firstBox}>
         <DetailImagesComponent currentImage={currentImage} handleThumbnailClick={handleThumbnailClick} images={images} product={product}/>
-     
-         <FunctionalityComponent product={product} handleAddToCart={handleAddToCart} isInCart={isInCart} />
-    
+         <FunctionalityComponent product={product}
+         handleAddToCart={handleAddToCart}
+         handleAddToWishList={handleAddToWishList}
+         isInCart={isInCart} inWishList={inWishList}
+          />
           </Box>
         <Features product={product}/>
       </>)
     }
-    
+      <CommentsComponent product={product}/>
     </Box>
   );
 };

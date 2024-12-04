@@ -9,12 +9,7 @@ import { CheckBox } from '@mui/icons-material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
-
-interface IJWT{
-    id:string;
-    email:string;
-    isAdmin:boolean
-}
+import { IJWT } from '@/types/types';
 interface ICartItem{
     product:RenderedProduct;
     quantity:number;
@@ -25,9 +20,6 @@ export const CartPage = () => {
     const accessToken=useSelector((state:RootState)=>state.token.accessToken)
 
     const [update,{error:updateError,isLoading:isUpdateLoading,isSuccess}]=useUpdateCartItemQuantityMutation()
-    const {data:productById,error,isLoading}=useGetProductByIdQuery('')
-
-    const [products, setProducts] = useState<RenderedProduct[]>([]);
     let userId: string  = '';
     if (accessToken) {
       try {
@@ -62,9 +54,8 @@ export const CartPage = () => {
         }
     }
 
-
-    if (error) return <div>Cart is empty</div>
-    if (isLoading) return <div>Loading</div>
+    if (cartError) return <div>Cart is empty</div>
+    if (isCartLoading) return <div>Loading</div>
     if(!userId) return <div>Not login</div>
   return (
     <Box ml={1} display={'flex'} flexDirection={'row'} gap={2}>

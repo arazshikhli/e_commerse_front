@@ -1,4 +1,17 @@
+export interface IJWT{
+  id:string;
+  email:string;
+  isAdmin:boolean
+}
 
+export interface IWishList{
+  product:RenderedProduct
+}
+export interface IWishAdd{
+userId:string;
+productId:string;
+productType:string
+}
 export interface IGetRating{
   productId:string;
   categoryName:string;
@@ -14,10 +27,16 @@ export interface CartProducts{
 }
 
 export interface CommentData{
-    model:string;
     user:string;
     commentText:string;
-    productType:string
+    createdAt:Date
+}
+export interface IGetCommentQuery{
+  model:string;
+  productType:string
+}
+export interface IAddCommentQuery{
+  model:string;
 }
 export interface IMobile {
     brand: string;

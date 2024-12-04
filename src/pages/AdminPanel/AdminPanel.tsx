@@ -110,13 +110,13 @@ export const AdminPanel = () => {
       <Box sx={{
   flex: 1,
   position: 'relative',
-  overflow: 'auto',  // Изменяем overflow для правильной прокрутки
-  minHeight: '90vh', // Устанавливаем минимальную высоту для контейнера
-  display: 'flex', // Используем flex для корректного размещения дочерних элементов
+  overflow: 'auto',
+  minHeight: '90vh',
+  display: 'flex',
   flexDirection: 'column',
 }}>
   {transitions((style, location) => (
-    <animated.div style={{ ...style, flexGrow: 1, width: '100%' }}  // Используем flexGrow вместо position: absolute
+    <animated.div style={{ ...style, flexGrow: 1, width: '100%' }}
      className={'animated-page'}>
       <Routes location={location}>
         <Route path="addProduct" element={<AddProduct />} />

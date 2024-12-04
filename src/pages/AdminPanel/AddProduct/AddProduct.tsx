@@ -1,37 +1,62 @@
-import React, { useEffect,useState } from 'react';
-import { Box, TextField, Button, Typography, FormControl, 
-  InputLabel, Select, MenuItem, FormHelperText, IconButton, 
-  Alert, AlertTitle, CircularProgress, Grid } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormHelperText,
+  IconButton,
+  Alert,
+  AlertTitle,
+  CircularProgress,
+  Grid,
+} from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useCreateProductMutation } from '../../../redux/rtk/productsApi';
 import { convertImageToBase64 } from '../../../helpers/ConvertImages';
-import { FileObject,CommonType } from '../../../types/types';
+import { FileObject, CommonType } from '../../../types/types';
 import { v4 as uuidv4, v4 } from 'uuid';
 import CloseIcon from '@mui/icons-material/Close';
+import { useGetProductModelsQuery } from '../../../redux/rtk/modelsApi';
+import { TestPage } from './TestPage';
 
 export const AddProduct = () => {
-  const { handleSubmit, watch, register, setValue, reset,formState: { errors } } = useForm<CommonType>({
-    mode: 'onChange'
+  const {
+    handleSubmit,
+    watch,
+    register,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm<CommonType>({
+    mode: 'onChange',
   });
-  const [createProduct, { isLoading, error:addProductError, isSuccess }] = useCreateProductMutation();
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]); 
-  const [showAlert, setShowAlert] = useState(false); 
+  const [createProduct, { isLoading, error: addProductError, isSuccess }] =
+    useCreateProductMutation();
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [showAlert, setShowAlert] = useState(false);
+  const { data: models } = useGetProductModelsQuery('');
 
+  console.log('models', models);
 
   const submit = async (data: CommonType) => {
     try {
       const base64Images = await convertImageToBase64(data.images);
       const newData = { ...data, images: base64Images };
       await createProduct(newData);
-      
+
       if (isSuccess) {
         reset(); // Сбрасываем форму
-        setShowAlert(true); // Показываем уведомление
+        setShowAlert(true);
         setTimeout(() => setShowAlert(false), 3000);
-        setImagePreviews([]) // Убираем уведомление через 3 секунды
+        setImagePreviews([]);
       }
     } catch (err) {
-      console.error("Error Converting images to Base64: ", err);
+      console.error('Error Converting images to Base64: ', err);
     }
   };
   const category = watch('categoryName');
@@ -45,7 +70,7 @@ export const AddProduct = () => {
         lastModified: file.lastModified,
         lastModifiedDate: new Date(),
         size: file.size.toString(),
-        uid: uuidv4()
+        uid: uuidv4(),
       };
       const currentImages = watch('images') || [];
       setValue('images', [...currentImages, newImage]);
@@ -69,13 +94,19 @@ export const AddProduct = () => {
     setValue('images', updatedImages);
   };
   return (
-    <Box sx={{width:'100%',display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center',
-    height:'100%'
-    }}>
+    // <TestPage/>
+    <Box
+      sx={{
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100%',
+      }}
+    >
       <Typography>Add Product</Typography>
-      {
-        isLoading&& <CircularProgress />
-      }
+      {isLoading && <CircularProgress />}
       {showAlert && isSuccess && (
         <Alert severity="success">
           <AlertTitle>Success</AlertTitle>
@@ -88,18 +119,20 @@ export const AddProduct = () => {
           'Failed to add product. Please try again.
         </Alert>
       )}
-      <Box component={'form'}
-      sx={{
-        width:'80%',
-        display:'flex',
-        flexDirection:'column',
-      
-        justifyContent:'space-around',
-        padding:'10px',
-        borderRadius:'2em'
-      }}
-      onSubmit={handleSubmit(submit)}>
-        <FormControl  sx={{ minWidth: '300px' }} error={!!errors.categoryName}>
+      <Box
+        component={'form'}
+        sx={{
+          width: '80%',
+          display: 'flex',
+          flexDirection: 'column',
+
+          justifyContent: 'space-around',
+          padding: '10px',
+          borderRadius: '2em',
+        }}
+        onSubmit={handleSubmit(submit)}
+      >
+        <FormControl sx={{ minWidth: '300px' }} error={!!errors.categoryName}>
           <InputLabel>Category</InputLabel>
           <Select
             {...register('categoryName', { required: 'Category is required' })}
@@ -114,194 +147,356 @@ export const AddProduct = () => {
           <FormHelperText>{errors.categoryName?.message}</FormHelperText>
         </FormControl>
 
-        <Box sx={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-around',gap:'2em'}}>
-        <TextField
-          label="Brand"
-          type="text"
-          {...register('brand', { required: 'Brand is required' })}
-          error={!!errors.brand}
-          helperText={errors.brand?.message}
-          sx={{marginTop:'1em',width:'50%'}} 
-        />
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            gap: '2em',
+          }}
+        >
+          <TextField
+            label="Brand"
+            type="text"
+            {...register('brand', { required: 'Brand is required' })}
+            error={!!errors.brand}
+            helperText={errors.brand?.message}
+            sx={{ marginTop: '1em', width: '50%' }}
+          />
 
-        <TextField
-          label="Model"
-          {...register('model', { required: 'Model is required' })}
-          error={!!errors.model}
-          helperText={errors.model?.message}
-          sx={{marginTop:'1em',width:'50%'}} 
-        />
-
+          <TextField
+            label="Model"
+            {...register('model', { required: 'Model is required' })}
+            error={!!errors.model}
+            helperText={errors.model?.message}
+            sx={{ marginTop: '1em', width: '50%' }}
+          />
         </Box>
-        <Box sx={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-around',gap:'2em'}}>
-        <TextField
-          label="Price"
-          type='number'
-          {...register('price', { required: 'Price is required' })}
-          error={!!errors.price}
-          helperText={errors.price?.message}
-          sx={{marginTop:'1em',width:'50%'}} 
-        />
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            gap: '2em',
+          }}
+        >
+          <TextField
+            label="Price"
+            type="number"
+            {...register('price', { required: 'Price is required' })}
+            error={!!errors.price}
+            helperText={errors.price?.message}
+            sx={{ marginTop: '1em', width: '50%' }}
+          />
 
-        <TextField
-          label="Screen size"
-          {...register('screenSize', { required: 'Screen size is required' })}
-          error={!!errors.screenSize}
-          helperText={errors.screenSize?.message}
-          sx={{marginTop:'1em',width:'50%'}} 
-        />
-           <TextField
-          label="Stock"
-          {...register('stock', { required: 'Stock is required' })}
-          error={!!errors.stock}
-          helperText={errors.stock?.message}
-          sx={{marginTop:'1em',width:'50%'}} 
-        />
-
+          <TextField
+            label="Screen size"
+            {...register('screenSize', { required: 'Screen size is required' })}
+            error={!!errors.screenSize}
+            helperText={errors.screenSize?.message}
+            sx={{ marginTop: '1em', width: '50%' }}
+          />
+          <TextField
+            label="Stock"
+            {...register('stock', { required: 'Stock is required' })}
+            error={!!errors.stock}
+            helperText={errors.stock?.message}
+            sx={{ marginTop: '1em', width: '50%' }}
+          />
         </Box>
         {category === 'TV' && (
           <>
-          <Box sx={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-around',gap:'2em'}}>
-          <TextField
-              label='Resolution'
-              {...register('resolution', { required: 'Resolution is required' })}
-              error={!!errors.resolution}
-              helperText={errors.resolution?.message}
-              sx={{marginTop:'1em',width:'50%'}} 
-            />
+            <Box
+              sx={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+                gap: '2em',
+              }}
+            >
+              <TextField
+                label="Resolution"
+                {...register('resolution', {
+                  required: 'Resolution is required',
+                })}
+                error={!!errors.resolution}
+                helperText={errors.resolution?.message}
+                sx={{ marginTop: '1em', width: '50%' }}
+              />
 
-            <FormControl sx={{marginTop:'1em',width:'50%'}}  error={!!errors.smartTV}>
-              <InputLabel>Smart TV</InputLabel>
-              <Select
-                {...register('smartTV', { required: 'Smart TV is required' })}
-                defaultValue=""
-                label="Smart TV"
-                onChange={(e) => setValue('smartTV', e.target.value)}
+              <FormControl
+                sx={{ marginTop: '1em', width: '50%' }}
+                error={!!errors.smartTV}
               >
-                <MenuItem value="true">Yes</MenuItem>
-                <MenuItem value="false">No</MenuItem>
-              </Select>
-              <FormHelperText>{errors.smartTV?.message}</FormHelperText>
-            </FormControl>
-          </Box>
-          
+                <InputLabel>Smart TV</InputLabel>
+                <Select
+                  {...register('smartTV', { required: 'Smart TV is required' })}
+                  defaultValue=""
+                  label="Smart TV"
+                  onChange={(e) => setValue('smartTV', e.target.value)}
+                >
+                  <MenuItem value="true">Yes</MenuItem>
+                  <MenuItem value="false">No</MenuItem>
+                </Select>
+                <FormHelperText>{errors.smartTV?.message}</FormHelperText>
+              </FormControl>
+            </Box>
           </>
         )}
 
         {category === 'Mobile' && (
           <>
-              <Box sx={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-around',gap:'2em'}}>
+            <Box
+              sx={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+                gap: '2em',
+              }}
+            >
               <TextField
-              label='RAM'
-              {...register('ram', { required: 'RAM is required' })}
-              error={!!errors.ram}
-              helperText={errors.ram?.message}
-              sx={{marginTop:'1em',width:'33.33%'}} 
-            />
-
-            <TextField
-              label='Processor'
-              {...register('processor', { required: 'Processor is required' })}
-              error={!!errors.processor}
-              helperText={errors.processor?.message}
-              sx={{marginTop:'1em',width:'33.33%'}} 
-            />
-
-            <TextField
-              label='Storage'
-              {...register('storage', { required: 'Storage is required' })}
-              error={!!errors.storage}
-              helperText={errors.storage?.message}
-              sx={{marginTop:'1em',width:'33.33%'}} 
-            />
-              </Box>
-            <Box sx={{width:'100%',gap:'2em',display:'flex',flexDirection:'row',justifyContent:'space-around',marginTop:'20px'}}>
-              <TextField sx={{width:'33.33%'}}
-              label='Battery'
-              {...register('battery',{required:'Battery is required'})}
-              error={!!errors.battery}
-              helperText={errors.battery?.message}
+                label="RAM"
+                {...register('ram', { required: 'RAM is required' })}
+                error={!!errors.ram}
+                helperText={errors.ram?.message}
+                sx={{ marginTop: '1em', width: '33.33%' }}
               />
-              <TextField sx={{width:'33.33%'}}
-                label='Operating system'
-                {...register('operatingSystem',{required:'Operating system is required'})}
+
+              <TextField
+                label="Processor"
+                {...register('processor', {
+                  required: 'Processor is required',
+                })}
+                error={!!errors.processor}
+                helperText={errors.processor?.message}
+                sx={{ marginTop: '1em', width: '33.33%' }}
+              />
+
+              <TextField
+                label="Storage"
+                {...register('storage', { required: 'Storage is required' })}
+                error={!!errors.storage}
+                helperText={errors.storage?.message}
+                sx={{ marginTop: '1em', width: '33.33%' }}
+              />
+            </Box>
+            <Box
+              sx={{
+                width: '100%',
+                gap: '2em',
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+                marginTop: '20px',
+              }}
+            >
+              <TextField
+                sx={{ width: '33.33%' }}
+                label="Battery"
+                {...register('battery', { required: 'Battery is required' })}
+                error={!!errors.battery}
+                helperText={errors.battery?.message}
+              />
+              <TextField
+                sx={{ width: '33.33%' }}
+                label="Operating system"
+                {...register('operatingSystem', {
+                  required: 'Operating system is required',
+                })}
                 error={!!errors.operatingSystem}
                 helperText={errors.operatingSystem?.message}
               />
-              <TextField sx={{width:'33.33%'}}
-              label='Display Type'
-              {...register('displayType',{required:'Display type is required'})}
-              error={!!errors.displayType}
-              helperText={errors.displayType?.message}
+              <TextField
+                sx={{ width: '33.33%' }}
+                label="Display Type"
+                {...register('displayType', {
+                  required: 'Display type is required',
+                })}
+                error={!!errors.displayType}
+                helperText={errors.displayType?.message}
               />
             </Box>
-            <Box sx={{width:'100%',gap:'2em',display:'flex',flexDirection:'row',justifyContent:'space-around',marginTop:'20px'}}>
-              <TextField sx={{width:'33.33%'}}
-              label='Battery capacity'
-              {...register('batteryCapacity',{required:'Battery capacity is required'})}
-              error={!!errors.batteryCapacity}
-              helperText={errors.batteryCapacity?.message}
+            <Box
+              sx={{
+                width: '100%',
+                gap: '2em',
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+                marginTop: '20px',
+              }}
+            >
+              <TextField
+                sx={{ width: '33.33%' }}
+                label="Battery capacity"
+                {...register('batteryCapacity', {
+                  required: 'Battery capacity is required',
+                })}
+                error={!!errors.batteryCapacity}
+                helperText={errors.batteryCapacity?.message}
               />
-              <TextField sx={{width:'33.33%'}}
-              label='Weight'
-              {...register('weight',{required:'Weight is required'})}
-              error={!!errors.weight}
-              helperText={errors.weight?.message}
+              <TextField
+                sx={{ width: '33.33%' }}
+                label="Weight"
+                {...register('weight', { required: 'Weight is required' })}
+                error={!!errors.weight}
+                helperText={errors.weight?.message}
               />
-              <TextField sx={{width:'33.33%'}}
-              label='Network'
-              {...register('network',{required:'Network type is required'})}
-              error={!!errors.network}
-              helperText={errors.network?.message}
+              <TextField
+                sx={{ width: '33.33%' }}
+                label="Network"
+                {...register('network', {
+                  required: 'Network type is required',
+                })}
+                error={!!errors.network}
+                helperText={errors.network?.message}
               />
-        
             </Box>
-            
           </>
         )}
 
         {category === 'Laptop' && (
           <>
-              <Box sx={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-around',gap:'2em'}}>
-            <TextField
-              label='RAM'
-              {...register('ram', { required: 'RAM is required' })}
-              error={!!errors.ram}
-              helperText={errors.ram?.message}
-              sx={{marginTop:'1em',width:'50%'}} 
-            />
+            <Box
+              sx={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+                gap: '2em',
+              }}
+            >
+              <TextField
+                label="RAM"
+                {...register('ram', { required: 'RAM is required' })}
+                error={!!errors.ram}
+                helperText={errors.ram?.message}
+                sx={{ marginTop: '1em', width: '50%' }}
+              />
 
-            <TextField
-              label='Processor'
-              {...register('processor', { required: 'Processor is required' })}
-              error={!!errors.processor}
-              helperText={errors.processor?.message}
-              sx={{marginTop:'1em',width:'50%'}} 
-            />
-            </Box>
-            
-            <Box sx={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-around',gap:'2em'}}>
-            <TextField
-              label='Storage'
-              {...register('storage', { required: 'Storage is required' })}
-              error={!!errors.storage}
-              helperText={errors.storage?.message}
-              sx={{marginTop:'1em',width:'50%'}} 
-            />
-
-            <TextField
-              label='Graphics Card'
-              {...register('graphicsCard', { required: 'Graphics Card is required' })}
-              error={!!errors.graphicsCard}
-              helperText={errors.graphicsCard?.message}
-              sx={{marginTop:'1em',width:'50%'}} 
-            />
+              <TextField
+                label="Processor"
+                {...register('processor', {
+                  required: 'Processor is required',
+                })}
+                error={!!errors.processor}
+                helperText={errors.processor?.message}
+                sx={{ marginTop: '1em', width: '50%' }}
+              />
             </Box>
 
-           
+            <Box
+              sx={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+                gap: '2em',
+              }}
+            >
+              <TextField
+                label="Storage"
+                {...register('storage', { required: 'Storage is required' })}
+                error={!!errors.storage}
+                helperText={errors.storage?.message}
+                sx={{ marginTop: '1em', width: '50%' }}
+              />
+
+              <TextField
+                label="Graphics Card"
+                {...register('graphicsCard', {
+                  required: 'Graphics Card is required',
+                })}
+                error={!!errors.graphicsCard}
+                helperText={errors.graphicsCard?.message}
+                sx={{ marginTop: '1em', width: '50%' }}
+              />
+            </Box>
+            <Box
+              sx={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+                gap: '2em',
+              }}
+            >
+              <TextField
+                label="Battery"
+                {...register('battery', { required: 'Battery is required' })}
+                error={!!errors.battery}
+                helperText={errors.battery?.message}
+                sx={{ marginTop: '1em', width: '50%' }}
+              />
+              <TextField
+                label="Battery Capacity"
+                {...register('batteryCapacity', {
+                  required: 'Battery is required',
+                })}
+                error={!!errors.batteryCapacity}
+                helperText={errors.batteryCapacity?.message}
+                sx={{ marginTop: '1em', width: '50%' }}
+              />
+            </Box>
+            <Box
+              sx={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+                gap: '2em',
+              }}
+            >
+              <TextField
+                label="Operating system"
+                {...register('operatingSystem', {
+                  required: 'Battery is required',
+                })}
+                error={!!errors.operatingSystem}
+                helperText={errors.operatingSystem?.message}
+                sx={{ marginTop: '1em', width: '50%' }}
+              />
+              <TextField
+                label="Display Type"
+                {...register('displayType', {
+                  required: 'Battery is required',
+                })}
+                error={!!errors.displayType}
+                helperText={errors.displayType?.message}
+                sx={{ marginTop: '1em', width: '50%' }}
+              />
+            </Box>
+            <Box
+              sx={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+                gap: '2em',
+              }}
+            >
+              <TextField
+                label="weight"
+                {...register('weight', { required: 'Battery is required' })}
+                error={!!errors.weight}
+                helperText={errors.weight?.message}
+                sx={{ marginTop: '1em', width: '50%' }}
+              />
+              <TextField
+                label="Network"
+                {...register('network', { required: 'Battery is required' })}
+                error={!!errors.network}
+                helperText={errors.network?.message}
+                sx={{ marginTop: '1em', width: '50%' }}
+              />
+            </Box>
           </>
         )}
-          <TextField
+        <TextField
           fullWidth
           multiline
           minRows={3}
@@ -309,11 +504,16 @@ export const AddProduct = () => {
           {...register('description', { required: 'Description is required' })}
           error={!!errors.description}
           helperText={errors.description?.message}
-          sx={{marginTop:'1em'}} 
+          sx={{ margin: '1em 0' }}
         />
-        <Box sx={{
-          display:'flex',width:'100%',flexDirection:'row',justifyContent:'center'
-        }}>
+        <Box
+          sx={{
+            display: 'flex',
+            width: '100%',
+            flexDirection: 'row',
+            justifyContent: 'center',
+          }}
+        >
           <input
             accept="image/*"
             style={{ display: 'none' }}
@@ -328,38 +528,47 @@ export const AddProduct = () => {
           </label>
         </Box>
         <Box sx={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-  {imagePreviews.map((preview, index) => (
-    <Box 
-      key={index} 
-      sx={{ 
-        width: '150px', 
-        height: '150px', 
-        display: 'flex', 
-        flexDirection: 'column', 
-        justifyContent: 'center',
-        alignItems:'center', 
-        position: 'relative',
-        backgroundColor:'gray' // Позиционирование на внешний контейнер
-      }}
-    >
-      <Box 
-        sx={{ 
-          width: '120px', 
-          height: '120px', 
-          backgroundImage: `url(${preview})`, 
-          backgroundPosition: 'center', 
-          backgroundSize: 'cover', 
-      
-        }} 
-      />
-      <IconButton onClick={()=>handleRemoveImage(index)} sx={{ position: 'absolute', top: '2px',right:'1px', zIndex: '300' }}>
-        <CloseIcon />
-      </IconButton>
-    </Box>
-  ))}
-</Box>
+          {imagePreviews.map((preview, index) => (
+            <Box
+              key={index}
+              sx={{
+                width: '150px',
+                height: '150px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                position: 'relative',
+                backgroundColor: 'gray', // Позиционирование на внешний контейнер
+              }}
+            >
+              <Box
+                sx={{
+                  width: '120px',
+                  height: '120px',
+                  backgroundImage: `url(${preview})`,
+                  backgroundPosition: 'center',
+                  backgroundSize: 'cover',
+                }}
+              />
+              <IconButton
+                onClick={() => handleRemoveImage(index)}
+                sx={{
+                  position: 'absolute',
+                  top: '2px',
+                  right: '1px',
+                  zIndex: '300',
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          ))}
+        </Box>
 
-        <Button sx={{marginTop:'1em'}} variant='contained' type='submit'>Add Product</Button>
+        <Button sx={{ marginTop: '1em' }} variant="contained" type="submit">
+          Add Product
+        </Button>
       </Box>
     </Box>
   );

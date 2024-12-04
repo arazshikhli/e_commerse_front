@@ -23,11 +23,9 @@ const authSlice = createSlice({
   reducers: {
     setTokens: (state, action) => {
       const { accessToken, refreshToken } = action.payload;
-
+      console.log(refreshToken)
       state.accessToken = accessToken;
-      state.refreshToken = refreshToken; // Хранится в состоянии, но не в localStorage
-
-      // Декодируем и сохраняем информацию о пользователе
+      state.refreshToken = refreshToken;
       state.user = jwtDecode(accessToken);
 
       // Сохраняем только accessToken в localStorage
@@ -39,7 +37,6 @@ const authSlice = createSlice({
       state.refreshToken = null;
       state.user = null;
       localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
     },
   },
 });
@@ -55,6 +52,6 @@ export const decodeToken = (token: string | null) => {
     return null;
   }
 };
-
+export const user=(state:RootState)=>state.token.user
 export const {  setTokens, logout } = authSlice.actions;
 export default authSlice.reducer;

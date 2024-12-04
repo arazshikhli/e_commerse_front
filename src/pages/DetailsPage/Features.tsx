@@ -14,10 +14,10 @@ export const Features:FC<IFeatures> = ({product}) => {
     <Box sx={{flex:1,marginRight:'20px'}}>
         <Box sx={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-between', borderBottom: '1px solid #7777' }}>
             <Typography sx={{color:'#777777'}}>Screen Size</Typography><Typography>{product.screenSize}</Typography>
-           </Box>           
+           </Box>
         </Box>
     </Box>
-   {product.categoryName==='Mobile'&&<>
+   {product.categoryName!=='TV'&&<>
     <Box sx={{width:'98%',backgroundColor:'#ffffff',borderRadius:'0 0 20px 20px ',padding:'0 20px 20px 20px',display:'flex',flexDirection:'row',textAlign:'center'}}>
            <Box sx={{flex:1,marginRight:'20px'}}>
         <Box sx={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-between', borderBottom: '1px solid #7777',marginBottom:'20px' }}>
@@ -32,7 +32,7 @@ export const Features:FC<IFeatures> = ({product}) => {
            <Box sx={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-between', borderBottom: '1px solid #7777',marginBottom:'20px' }}>
             <Typography sx={{color:'#777777'}}>Network type</Typography><Typography>{product.network}</Typography>
            </Box>
-           
+
         </Box>
         <Box sx={{flex:1}}>
         <Box sx={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-between', borderBottom: '1px solid #7777',marginBottom:'20px' }}>

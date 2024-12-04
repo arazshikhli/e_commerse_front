@@ -12,11 +12,13 @@ import { CartPage } from './pages/CartPage/CartPage';
 import { RequireAdmin } from './helpers/requireAdmin';
 import { RequireAuth } from './helpers/RequireAuth';
 import {FilteredListPage} from "./pages/FilteredListPage/FilteredListPage";
-
+import { Favorites } from './pages/Favorites/Favorites';
+import { StoreMap } from './pages/StoreMap/StoreMap';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 function App() {
   const [openSnackBar,setOpenSnackBar]=useState(false);
 
- 
+
   const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
@@ -24,7 +26,6 @@ function App() {
     setOpenSnackBar(false);
   };
   return (
-  
      <Routes>
     <Route path='/' element={<Layout openSnackBar={openSnackBar} setOpenSnackBar={setOpenSnackBar} handleClose={handleClose}/>}>
     <Route path='/' index element={<HomePage/>}/>
@@ -35,10 +36,12 @@ function App() {
     <Route path='/filtered' element={<FilteredListPage/>}/>
     <Route path='/products/detail/:id' element={<DetailsPage/>}/>
     <Route path='/cart' element={<RequireAuth><CartPage/></RequireAuth>}/>
+    <Route path='/favorites' element={<RequireAuth><Favorites/></RequireAuth>}/>
+    <Route path='/stores' element={<StoreMap/>}/>
     </Route>
-    </Routes> 
+    </Routes>
 
- 
+
 
   );
 }

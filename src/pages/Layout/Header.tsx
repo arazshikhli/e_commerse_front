@@ -1,223 +1,318 @@
-import React,{memo, useEffect, useState,MouseEvent} from 'react';
-import { AppBar, Box, IconButton, Toolbar, Typography, Menu, Tooltip, Button, Avatar, Container, Badge } from '@mui/material';
-import { useSelector,useDispatch } from 'react-redux';
-import {logout} from '../../redux/baseReduxSlices/authSlice'
+// import React, { memo, useEffect, useMemo } from 'react';
+// import {
+//   AppBar,
+//   Box,
+//   IconButton,
+//   Toolbar,
+//   Typography,
+//   Menu,
+//   Tooltip,
+//   Avatar,
+//   Container,
+//   Badge,
+// } from '@mui/material';
+// import { useSelector, useDispatch } from 'react-redux';
+// import { logout, user } from '../../redux/baseReduxSlices/authSlice';
+// import { Favorite, Login, Logout } from '@mui/icons-material';
+// import { NavLink } from 'react-router-dom';
+// import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+// import { useNavigate } from 'react-router-dom';
+// import AdbIcon from '@mui/icons-material/Adb';
+// import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+// import {
+//   fetchCart,
+//   selectCartItems,
+//   selectCartLoading,
+// } from '../../redux/baseReduxSlices/cartSlice';
+// import { selectWishlistItems } from '../../redux/baseReduxSlices/wishlistSlice';
+// import { RootState } from '../../redux/store';
+// import { useAppDispatch } from '../../helpers/useAppDispatch';
+
+// export const HeaderComponent = memo(() => {
+//   const dispatch = useAppDispatch();
+//   const navigate = useNavigate();
+//   const user_info = useSelector(user);
+//   const cartItems = useSelector(selectCartItems);
+//   const isLoading = useSelector(selectCartLoading);
+//   const wishlistItems = useSelector(selectWishlistItems);
+//   const { email, isAdmin, id: userId } = user_info || {};
+
+//   useEffect(() => {
+//     if (userId) {
+//       dispatch(fetchCart(userId));
+//     } // Здесь передается userId
+//   }, [dispatch, cartItems]);
+//   // Подсчет количества товаров в корзине
+//   const cartItemsQuantity = useMemo(() => {
+//     let quantity = 0;
+//     if (cartItems && cartItems.length) {
+//       for (let index = 0; index < cartItems.length; index++) {
+//         const cartItem = cartItems[index];
+//         quantity += cartItem.quantity;
+//       }
+//     }
+//     return quantity;
+//   }, [cartItems, fetchCart]);
+
+//   // Подсчет количества товаров в избранном
+//   const wishListQuantity = useMemo(() => {
+//     return wishlistItems?.length || 0;
+//   }, [wishlistItems]);
+
+//   const handleNavigate = () => {
+//     navigate('/register');
+//   };
+
+//   const handleLogout = () => {
+//     dispatch(logout());
+//   };
+
+//   const CartButton = memo(
+//     ({ cartItemsQuantity }: { cartItemsQuantity: number }) => (
+//       <NavLink to="/cart">
+//         <IconButton color="inherit">
+//           <Badge badgeContent={cartItemsQuantity} color="success">
+//             <ShoppingCartIcon />
+//           </Badge>
+//         </IconButton>
+//       </NavLink>
+//     )
+//   );
+
+//   const WishListButton = memo(
+//     ({ wishListQuantity }: { wishListQuantity: number }) => (
+//       <NavLink to="/favorites">
+//         <IconButton color="inherit">
+//           <Badge badgeContent={wishListQuantity} color="success">
+//             <Favorite />
+//           </Badge>
+//         </IconButton>
+//       </NavLink>
+//     )
+//   );
+
+//   return (
+//     <AppBar position="static">
+//       <Container maxWidth="lg">
+//         <Toolbar
+//           disableGutters
+//           sx={{
+//             display: 'flex',
+//             justifyContent: 'space-between',
+//             alignItems: 'center',
+//           }}
+//         >
+//           <Box sx={{ display: 'flex', alignItems: 'center' }}>
+//             <AdbIcon sx={{ mr: 1 }} />
+//             <NavLink to="/">
+//               <Typography
+//                 variant="h6"
+//                 noWrap
+//                 sx={{
+//                   fontFamily: 'monospace',
+//                   fontWeight: 700,
+//                   letterSpacing: '.3rem',
+//                   color: 'inherit',
+//                   textDecoration: 'none',
+//                 }}
+//               >
+//                 HOME
+//               </Typography>
+//             </NavLink>
+//           </Box>
+//           <Box sx={{ display: 'flex', alignItems: 'center' }}>
+//             {user_info ? (
+//               <>
+//                 <CartButton cartItemsQuantity={cartItemsQuantity} />
+//                 <WishListButton wishListQuantity={wishListQuantity} />
+//               </>
+//             ) : null}
+
+//             {isAdmin ? (
+//               <Tooltip title="Admin panel">
+//                 <NavLink to="/adminpanel">
+//                   <IconButton color="inherit">
+//                     <AdminPanelSettingsIcon />
+//                   </IconButton>
+//                 </NavLink>
+//               </Tooltip>
+//             ) : null}
+//             {user_info ? (
+//               <IconButton onClick={handleLogout} color="inherit" sx={{ ml: 2 }}>
+//                 <Logout />
+//               </IconButton>
+//             ) : (
+//               <IconButton color="inherit" onClick={handleNavigate}>
+//                 <Login />
+//               </IconButton>
+//             )}
+//           </Box>
+//         </Toolbar>
+//       </Container>
+//     </AppBar>
+//   );
+// });
+
+import React, { memo, useEffect, useState, MouseEvent, useMemo } from 'react';
+import {
+  AppBar,
+  Box,
+  IconButton,
+  Toolbar,
+  Typography,
+  Menu,
+  Tooltip,
+  Avatar,
+  Container,
+  Badge,
+} from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout, user } from '../../redux/baseReduxSlices/authSlice';
 import { Favorite, Login, Logout } from '@mui/icons-material';
-import {  NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import {useGetCartQuery} from '../../redux/rtk/productsApi'
+import {
+  useGetCartProductsQuery,
+  useGetCartQuery,
+  useGetWishListProductsQuery,
+} from '../../redux/rtk/productsApi';
 import { jwtDecode } from 'jwt-decode';
-import {tokenFromStore} from '../../redux/baseReduxSlices/authSlice';
-import MenuItem from '@mui/material/MenuItem';
+import { tokenFromStore } from '../../redux/baseReduxSlices/authSlice';
+import { useNavigate } from 'react-router-dom';
 import AdbIcon from '@mui/icons-material/Adb';
 import { IToken } from '../../types/types';
-interface IHeaderProps {
-  openDrawer: boolean;
-  toggleDrawer: (newOpen: boolean) => void;
-  cartItemsQuantity:number
-}
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import { useGetProductModelsNamesQuery } from '../../redux/rtk/modelsApi';
+import { selectCartItems } from '../../redux/baseReduxSlices/cartSlice';
 
+export const HeaderComponent = memo(() => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user_info = useSelector(user);
+  const carts = useSelector(selectCartItems);
+  const { email, isAdmin, id: userId } = user_info || {};
+  console.log('carts from redux', carts);
+  const {
+    data: Cart,
+    error: cartError,
+    isLoading: isCartLoading,
+  } = useGetCartProductsQuery(userId || '', {
+    skip: !userId,
+  });
+  const {
+    data: WishList,
+    error: wishListError,
+    isLoading: isWishListLoading,
+  } = useGetWishListProductsQuery(userId || '', { skip: !userId });
 
-const pages = ['Products', 'Pricing', 'Blog'];
-export const HeaderComponent: React.FC<IHeaderProps> = memo(({ openDrawer, toggleDrawer,cartItemsQuantity }) => {
-  const dispatch=useDispatch()
-  const accessToken=useSelector(tokenFromStore);
-  let userId: string | null = null;
-  let email: string | null = null;
-  let isAdmin:boolean=false;
-  if(accessToken){
-    try{
-        const decoded: IToken = jwtDecode<IToken>(accessToken); // Decode the token correctly
-        isAdmin = decoded.isAdmin; // Check if the user is an admin
-    }
-    catch(err){
-        console.error('Error decoding token:', err);
-    }
-}
-  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-
-  const handleOpenNavMenu = (event:MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
-  if (accessToken) {
-    try {
-      const decoded: any = jwtDecode(accessToken);
-      userId = decoded?.id;
-      email=decoded?.email// получаем id пользователя
-    } catch (error) {
-      console.error('Ошибка декодирования токена:', error);
-      userId = null; // Если токен некорректен
-    }
-  }
-
-  const {data:userCart,error:cartError,isLoading:isCartLoading}=useGetCartQuery(userId||'',{
-    skip:!userId
-  })
-    const [cartCount,setCartCount]=useState(0);
-    useEffect(()=>{
-      let summ=0
-      if(userCart&& userCart?.length>0){
-        for(let idx=0;idx<userCart.length;idx++){
-         summ+=userCart[idx].quantity
-        }
-        setCartCount(summ)
+  const cartItemsQuantity = useMemo(() => {
+    let quantity = 0;
+    if (Cart && Cart.length) {
+      for (let index = 0; index < Cart.length; index++) {
+        const cartItem = Cart[index];
+        quantity += cartItem.quantity;
       }
-    },[userCart])
-  const handleLogout=()=>{
-    dispatch(logout())
-  }
+    }
+    return quantity;
+  }, [Cart]);
+
+  console.log('cart from Redux', carts);
+  const wishListQuantity = useMemo(() => {
+    return WishList?.length || 0;
+  }, [WishList]);
+
+  const handleNavigate = () => {
+    navigate('/register');
+  };
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
+  const CartButton = memo(
+    ({ cartItemsQuantity }: { cartItemsQuantity: number }) => (
+      <NavLink to="/cart">
+        <IconButton color="inherit">
+          <Badge badgeContent={cartItemsQuantity} color="success">
+            <ShoppingCartIcon />
+          </Badge>
+        </IconButton>
+      </NavLink>
+    )
+  );
+
+  const WishListButton = memo(
+    ({ wishListQuantity }: { wishListQuantity: number }) => (
+      <NavLink to="/favorites">
+        <IconButton color="inherit">
+          <Badge badgeContent={wishListQuantity} color="success">
+            <Favorite />
+          </Badge>
+        </IconButton>
+      </NavLink>
+    )
+  );
   return (
-<AppBar position='static' sx={{overflow:'hidden',marginBottom:'20px'}}>
-  <Container maxWidth='md'>
-    <Toolbar disableGutters sx={{overflow:'hidden'}}>
-      <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-        <NavLink to={'/'}><Typography
-            variant="h6"
-            noWrap
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            HOME
-          </Typography></NavLink>
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-                 size="large"
-                 aria-label="account of current user"
-                 aria-controls="menu-appbar"
-                 aria-haspopup="true"
-                 onClick={handleOpenNavMenu}
-                 color="inherit"
-                 sx={{display:'block'}}
-            >
-            </IconButton>
-            <Menu
-            id='menu-appbar'
-            anchorEl={anchorElNav}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical:'top',
-              horizontal:'left'
-            }}
-            open={Boolean(anchorElNav)}
-            onClose={handleCloseNavMenu}
-            sx={{display:{xs:'block',md:'none',display:'block'}}}
-            >
-              {
-                pages.map((page)=>(
-                  <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography sx={{textAlign:'center'}}>{page}</Typography>
-                  </MenuItem>
-                ))
-              }
-            </Menu>
-            </Box>
-            <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-            <Typography
-            variant="h5"
-            noWrap
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
-          {/* <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+    <AppBar position="static">
+      <Container maxWidth="lg">
+        <Toolbar
+          disableGutters
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <AdbIcon sx={{ mr: 1 }} />
+            <NavLink to="/">
+              <Typography
+                variant="h6"
+                noWrap
+                sx={{
+                  fontFamily: 'monospace',
+                  fontWeight: 700,
+                  letterSpacing: '.3rem',
+                  color: 'inherit',
+                  textDecoration: 'none',
+                }}
               >
-                {page}
-              </Button>
-            ))}
-          </Box> */}
-          <Box sx={{ flexGrow: 0, display:'flex',alignItems:'center'}}>
-            {
-              isAdmin&&(<>
-              <Tooltip title="Admin panel">
-              <NavLink to={'/adminpanel'}>  <IconButton
-              sx={{ p: 0 }}>
-                <Avatar alt={email?email:''} src="/static/images/avatar/2.jpg" />
-              </IconButton></NavLink>
-            </Tooltip>
-              </>)
-            }
+                HOME
+              </Typography>
+            </NavLink>
           </Box>
-        {accessToken&&!isAdmin&&(
-            <Box sx={{marginLeft:'100px'}}>
-            <NavLink style={{marginRight:'10px'}} to={'/cart'}>
-                  <ShoppingCartIcon sx={{fontSize:'30px'}}/>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {user_info ? (
+              <>
+                <CartButton cartItemsQuantity={cartItemsQuantity} />
+                <WishListButton wishListQuantity={wishListQuantity} />
+              </>
+            ) : (
+              <></>
+            )}
+
+            {isAdmin ? (
+              <Tooltip title="Admin panel">
+                <NavLink to="/adminpanel">
+                  <IconButton color="inherit">
+                    <AdminPanelSettingsIcon />
+                  </IconButton>
                 </NavLink>
-                </Box>
-        )}
-      
-          {
-            accessToken&&(
-              <Box sx={{marginLeft:'10px',display:'flex',flexDirection:'row',justifyContent:'space-between',width:'100%'}}>
-              <Badge badgeContent={4} color='success'>
-                  <IconButton>
-                <ShoppingCartIcon/>
+              </Tooltip>
+            ) : (
+              <></>
+            )}
+            {user_info ? (
+              <IconButton onClick={handleLogout} color="inherit" sx={{ ml: 2 }}>
+                <Logout />
               </IconButton>
-              </Badge>
-              <Badge badgeContent={4} color='success'>
-                  <IconButton>
-                <Favorite/>
+            ) : (
+              <IconButton color="inherit" onClick={handleNavigate}>
+                <Login />
               </IconButton>
-              </Badge>
-              </Box>
-            )
-          }
-   
-         <Box sx={{marginLeft:'100px'}}>
-               {
-                accessToken?(
-                  <IconButton  onClick={handleLogout} sx={{marginLeft:'100px'}} >
-                        <Logout sx={{fontSize:'30px'}}/>
-                      </IconButton>
-                     ):(
-                        <NavLink to={'/register'} >
-                          <Login/>
-                        </NavLink>
-                      )
-               }
-                </Box>
-    </Toolbar>
-
-  </Container>
-
-</AppBar>
+            )}
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 });
-

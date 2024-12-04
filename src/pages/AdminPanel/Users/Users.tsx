@@ -8,6 +8,13 @@ import { styled } from '@mui/material/styles';
 import {useMakeAdminMutation,useRemoveAdminMutation}from '../../../redux/rtk/authApi'
 import Grid from '@mui/joy/Grid';
 import { useGetCartProductsQuery } from '../../../redux/rtk/productsApi';
+
+interface ErrorType{
+  status:number;
+  data:{
+    message:string;
+  }
+}
 interface User {
   _id: string;
   password: string;
@@ -43,6 +50,7 @@ export const Users = () => {
   const [changeRole,setChangeRole]=useState(false)
 
   const allUsers = Array.isArray(allUsersData) ? allUsersData : allUsersData.users || [];
+  console.log(allUsers)
   const [cartProductsByUser, setCartProductsByUser] = useState<Record<string, CartProducts[]>>({});
 
 
@@ -89,7 +97,7 @@ const rows = allUsers.map((user: User) =>
     const { data: cartProducts = [], isLoading: isCartLoading, error: cartError } = useGetCartProductsQuery(userId);
 
     if (isCartLoading) return <p>Loading cart for {userId}...</p>;
-    if (cartError) return <p>Error loading cart for {userId}</p>;
+    if (cartError) return <p>empty</p>;
 
     return (
       <div>
@@ -137,6 +145,7 @@ const rows = allUsers.map((user: User) =>
           </TableHead>
           <TableBody>
             {rows.map((user: User) => {
+              console.log(user.isAdmin)
               return (
                 <StyledTableRow key={user._id}>
                   <StyledTableCell component="th" scope="row">
@@ -144,7 +153,7 @@ const rows = allUsers.map((user: User) =>
                   </StyledTableCell>
                   <StyledTableCell align="left">{user.name}</StyledTableCell>
                   <StyledTableCell align="left">{user.email}</StyledTableCell>
-                  <StyledTableCell align="left">{Boolean(user.isAdmin)}</StyledTableCell>
+                  <StyledTableCell align="left">{user.isAdmin?'Admin':'User'}</StyledTableCell>
                   <StyledTableCell align="left">
                     {
                       <UserCart userId={user._id} />

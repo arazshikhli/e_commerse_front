@@ -1,14 +1,20 @@
-import {BaseQueryFn, createApi,FetchArgs,fetchBaseQuery, FetchBaseQueryError} from '@reduxjs/toolkit/query/react'
+import {BaseQueryFn, createApi,FetchArgs,fetchBaseQuery, FetchBaseQueryError,BaseQueryApi,FetchBaseQueryMeta} from '@reduxjs/toolkit/query/react'
 import { logout, setTokens } from '../baseReduxSlices/authSlice';
 
 
+const isTokenExpired = (token:any) => {
+  const payload = JSON.parse(atob(token.split('.')[1]));
+  return payload.exp * 1000 < Date.now(); // Проверяем, не истек ли токен
+};
+
 // Функция для обновления токена
 const refreshAccessToken = async () => {
-  const response = await fetch('/users/refresh-token', {
+  const response = await fetch(`${process.env.REACT_APP_BASE_SERVER_URL || 'http://localhost:5000'}users/refresh-token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
+    credentials: 'include'
   });
   const data = await response.json();
   if (!response.ok) {
@@ -16,6 +22,7 @@ const refreshAccessToken = async () => {
   }
 
   localStorage.setItem('accessToken', data.accessToken);
+  console.log('access From refresh', data.accessToken);
   return data.accessToken;
 };
 
@@ -28,6 +35,7 @@ const baseQuery = fetchBaseQuery({
     }
     return headers;
   },
+  credentials:'include'
 });
 
 const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
@@ -35,34 +43,63 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
   api,
   extraOptions
 ) => {
-  let result = await baseQuery(args, api, extraOptions);
+  const token = localStorage.getItem('accessToken');
 
-  if (result.error && result.error.status === 401) {
-    // Если запрос вернул 401 ошибку (истекший accessToken)
+  // Проверяем, не истек ли токен
+  if (token && isTokenExpired(token)) {
+    console.log('Токен истек, пытаемся обновить...');
     try {
-      const newAccessToken = await refreshAccessToken();
-      api.dispatch(setTokens(newAccessToken));
-
-      // Повторяем запрос с новым accessToken
-      result = await baseQuery(args, api, extraOptions);
+      const newAccessToken = await refreshAccessToken(); // Обновляем токен
+      api.dispatch(setTokens({ accessToken: newAccessToken, refreshToken: null }));
     } catch (error) {
-      // Если обновить токен не удалось
       localStorage.removeItem('accessToken');
       api.dispatch(logout());
+      return {
+        error: {
+          status: 401,
+          data: 'Не удалось обновить токен',
+        },
+      };
+    }
+  }
+
+  // Выполняем базовый запрос
+  let result = await baseQuery(args, api, extraOptions);
+
+  // Если получили ошибку 401, пытаемся обновить токен заново
+  if (result.error && result.error.status === 401) {
+    console.log('Токен истек во время запроса, пытаемся обновить...');
+    try {
+      const newAccessToken = await refreshAccessToken(); // Обновляем токен
+      api.dispatch(setTokens({ accessToken: newAccessToken, refreshToken: null }));
+
+      // Повторяем оригинальный запрос с новым токеном
+      result = await baseQuery(args, api, extraOptions);
+    } catch (error) {
+      localStorage.removeItem('accessToken');
+      api.dispatch(logout());
+      return {
+        error: {
+          status: 401,
+          data: 'Не удалось обновить токен',
+        },
+      };
     }
   }
 
   return result;
 };
 
+
 export const authApi = createApi({
   reducerPath: 'authRTK',
   baseQuery: baseQueryWithReauth,
+
   tagTypes: ['Users'],
   endpoints: (builder) => ({
     reqister: builder.mutation({
       query: (userData) => {
-        
+
         return ({
           url: 'users/register',
           method: 'POST',
@@ -71,6 +108,13 @@ export const authApi = createApi({
         })
       },
       invalidatesTags: ['Users'],
+    }),
+    googleLogin: builder.mutation({
+      query: (credential) => ({
+        url: 'users/auth',
+        method: 'POST',
+        body: { credential },
+      }),
     }),
 
     login: builder.mutation({
@@ -82,14 +126,15 @@ export const authApi = createApi({
           body: credentials,
           credentials:'include'
         })
-      
+
       },invalidatesTags:['Users']
-        
+
     }),
 
     getAllUsers: builder.query({
       query: () => '/users/users',
       providesTags: (result) => ['Users'],
+
     }),
 
     makeAdmin: builder.mutation({
@@ -132,4 +177,5 @@ export const {
   useReqisterMutation,
   useGetAllUsersQuery,
   useRemoveAdminMutation,
+  useGoogleLoginMutation
 } = authApi;

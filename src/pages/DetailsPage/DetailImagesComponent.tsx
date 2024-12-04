@@ -1,6 +1,7 @@
 import { Box, Card, CardMedia, Skeleton } from '@mui/material'
 import React, { FC ,memo} from 'react'
 import { RenderedProduct } from '@/types/types'
+import { ToastContainer } from 'react-toastify';
 interface ImagesComponentProps{
     product:RenderedProduct|undefined;
     images:string[]|undefined;
@@ -12,8 +13,8 @@ export const DetailImagesComponent:FC<ImagesComponentProps> = memo(({product,ima
 
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'row', 
-    padding: '20px', width:'48%',height:'90%',justifyContent:'center',
+    <Box sx={{ display: 'flex', flexDirection: 'row',
+    padding: '20px', width:'45%',height:'90%',justifyContent:'center',
     alignItems:'center', backgroundColor:'#ffff',  borderRadius:'20px'}}>
     {/* Левый блок с миниатюрами */}
     <Box sx={{ display: 'flex', flexDirection: 'column', marginRight: '20px' }}>
@@ -21,7 +22,7 @@ export const DetailImagesComponent:FC<ImagesComponentProps> = memo(({product,ima
         <Card key={index} sx={{ marginBottom: '10px', border: '1px solid transparent', transition: 'border 0.3s ease', '&:hover': { border: '1px solid red' } }}>
           <CardMedia
            component="img" image={image} width={100} height={100}
-           onClick={() => handleThumbnailClick(image)} 
+           onClick={() => handleThumbnailClick(image)}
            alt={`Image ${index + 1}`} />
         </Card>
       ))}
@@ -32,9 +33,9 @@ export const DetailImagesComponent:FC<ImagesComponentProps> = memo(({product,ima
       {
         currentImage?(<Card>   <CardMedia
           component="img"
-          image={currentImage} 
+          image={currentImage}
           width={500} height={500}
-          
+
           alt={product?.model}
         sx={{objectFit:"contain"}}
         /></Card>
@@ -44,6 +45,7 @@ export const DetailImagesComponent:FC<ImagesComponentProps> = memo(({product,ima
       height={400} />)
       }
     </Box>
+    <ToastContainer/>
   </Box>
   )
 })
